@@ -870,13 +870,13 @@
             document.getElementById('single-question-title').textContent = question;
             document.getElementById('single-answer-content').innerHTML = marked.parse(answer);
             singleAnswerView.classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo(0, 0);
         }
 
         function doBackToQuestions() {
             singleAnswerView.classList.add('hidden');
             questionsView.classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo(0, 0);
         }
 
         const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
