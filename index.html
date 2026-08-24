@@ -412,7 +412,7 @@
       </header>
 
       <div class="cards">
-        <button class="card c1" onclick="openExam('1st_incourse')">
+        <button class="card c1" onclick="openExam('incourse1')">
           <svg class="motif" viewBox="0 0 100 100"><path d="M50 6c8 14 8 24 0 38-8 14-8 24 0 38"/><path d="M50 6c-8 14-8 24 0 38 8 14 8 24 0 38"/><circle cx="50" cy="50" r="4"/></svg>
           <div class="row-top">
             <div>
@@ -425,7 +425,7 @@
           </div>
         </button>
 
-        <button class="card c2" onclick="openExam('2nd_incourse')">
+        <button class="card c2" onclick="openExam('incourse2')">
           <svg class="motif" viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="4"/><circle cx="50" cy="50" r="22"/></svg>
           <div class="row-top">
             <div>
@@ -438,7 +438,7 @@
           </div>
         </button>
 
-        <button class="card c3" onclick="openExam('test_exam')">
+        <button class="card c3" onclick="openExam('test')">
           <svg class="motif" viewBox="0 0 100 100"><path d="M15 60 Q50 10 85 60" /><path d="M15 60 L85 60" /></svg>
           <div class="row-top">
             <div>
@@ -1042,9 +1042,9 @@
         
         let title = '';
         let themeClass = '';
-        if (examType === '1st_incourse') { title = '1st Incourse Subjects'; themeClass = 'p1'; }
-        else if (examType === '2nd_incourse') { title = '2nd Incourse Subjects'; themeClass = 'p2'; }
-        else if (examType === 'test_exam') { title = 'Test Exam Subjects'; themeClass = 'p3'; }
+        if (examType === 'incourse1') { title = '1st Incourse Subjects'; themeClass = 'p1'; }
+        else if (examType === 'incourse2') { title = '2nd Incourse Subjects'; themeClass = 'p2'; }
+        else if (examType === 'test') { title = 'Test Exam Subjects'; themeClass = 'p3'; }
         
         document.getElementById('subjects-view-title').textContent = title;
         
@@ -1069,9 +1069,9 @@
         
         // Pass theme class to questions view
         let themeClass = '';
-        if (currentExamType === '1st_incourse') { themeClass = 'p1'; }
-        else if (currentExamType === '2nd_incourse') { themeClass = 'p2'; }
-        else if (currentExamType === 'test_exam') { themeClass = 'p3'; }
+        if (currentExamType === 'incourse1') { themeClass = 'p1'; }
+        else if (currentExamType === 'incourse2') { themeClass = 'p2'; }
+        else if (currentExamType === 'test') { themeClass = 'p3'; }
         questionsView.className = 'page subjects active ' + themeClass;
         
         hideAllViews();
@@ -1092,9 +1092,9 @@
         
         // Apply theme to answer view
         let themeClass = '';
-        if (currentExamType === '1st_incourse') { themeClass = 'p1'; }
-        else if (currentExamType === '2nd_incourse') { themeClass = 'p2'; }
-        else if (currentExamType === 'test_exam') { themeClass = 'p3'; }
+        if (currentExamType === 'incourse1') { themeClass = 'p1'; }
+        else if (currentExamType === 'incourse2') { themeClass = 'p2'; }
+        else if (currentExamType === 'test') { themeClass = 'p3'; }
         singleAnswerView.className = 'page subjects active ' + themeClass;
         
         hideAllViews();
@@ -1103,15 +1103,14 @@
     }
 
     function doBackToQuestions() {
-        // Re-open subject to show questions
-        // We need the title of the current subject! We can find it in the data.
-        const examData = allQuestions.find(e => e.examType === currentExamType);
-        if (examData) {
-            const subjectData = examData.subjects.find(s => s.id === currentSubjectId);
-            if (subjectData) {
-                doOpenSubject(currentSubjectId, subjectData.title);
-            }
-        }
+        // Find subject title from SUBJECTS list
+        const bnToEn = { '০': '0', '১': '1', '২': '2', '৩': '3', '৪': '4', '৫': '5', '৬': '6', '৭': '7', '৮': '8', '৯': '9' };
+        const subject = SUBJECTS.find(s => {
+            const enId = s.code.replace(/[০-৯]/g, m => bnToEn[m]);
+            return enId === currentSubjectId;
+        });
+        const title = subject ? `${subject.name} (${subject.code})` : 'Subject';
+        doOpenSubject(currentSubjectId, title);
     }
 
     window.addEventListener('popstate', (event) => {
@@ -1134,28 +1133,39 @@
     });
 
     // --- Rendering Logic ---
+    const SUBJECTS = [
+      { name: "বাংলাদেশের রাজনৈতিক ও সাংবিধানিক উন্নয়ন", code: "২৩১৯০১" },
+      { name: "আন্তর্জাতিক রাজনীতির মূলনীতি", code: "২৩১৯০৩" },
+      { name: "দক্ষিণ এশিয়ার সরকার ও রাজনীতি (ভারত, পাকিস্তান, নেপাল ও শ্রীলঙ্কা)", code: "২৩১৯০৫" },
+      { name: "রাজনীতি অধ্যয়ন পদ্ধতি", code: "২৩১৯০৭" },
+      { name: "শান্তি ও সংঘর্ষ অধ্যয়ন পরিচিতি", code: "২৩১৯০৯" },
+      { name: "বাংলাদেশের লোক প্রশাসন", code: "২৩১৯১১" },
+      { name: "গবেষণা পদ্ধতি ও পরিসংখ্যান", code: "২৩১৯১৩" },
+      { name: "রাজনৈতিক সমাজবিজ্ঞান", code: "২৩১৯১৫" }
+    ];
+
     function renderSubjects() {
         const container = document.getElementById('subjects-list-container');
         container.innerHTML = '';
         
-        const examData = allQuestions.find(e => e.examType === currentExamType);
-        if (!examData || examData.subjects.length === 0) {
-            container.innerHTML = '<p style="padding:20px; color:var(--ink-dim)">No subjects available.</p>';
-            return;
-        }
-
-        examData.subjects.forEach(subject => {
+        SUBJECTS.forEach(subject => {
             const btn = document.createElement('button');
             btn.className = 'subject-card';
-            // Use the subject's id as the course code placeholder since actual code isn't in data yet, or just hardcode if needed
             btn.innerHTML = `
               <div>
-                <div class="subject-name">${subject.title}</div>
-                <div class="subject-code">Code: <span class="bn-num">${subject.id || '2319**'}</span></div>
+                <div class="subject-name">${subject.name}</div>
+                <div class="subject-code">Course Code: <span class="bn-num">${subject.code}</span></div>
               </div>
               <svg class="arrow" viewBox="0 0 24 24"><path d="M8 5l8 7-8 7"/></svg>
             `;
-            btn.addEventListener('click', () => openSubject(subject.id, subject.title));
+            const fullTitle = `${subject.name} (${subject.code})`;
+            // Note: our old id was just the code numbers
+            const id = subject.code.replace(/[^0-9]/g, '');
+            // Convert bengali digits to english digits for ID matching
+            const bnToEn = { '০': '0', '১': '1', '২': '2', '৩': '3', '৪': '4', '৫': '5', '৬': '6', '৭': '7', '৮': '8', '৯': '9' };
+            const enId = subject.code.replace(/[০-৯]/g, m => bnToEn[m]);
+            
+            btn.addEventListener('click', () => openSubject(enId, fullTitle));
             container.appendChild(btn);
         });
     }
@@ -1164,18 +1174,16 @@
         const container = document.getElementById('questions-list-container');
         container.innerHTML = '';
         
-        const examData = allQuestions.find(e => e.examType === currentExamType);
-        if (!examData) return;
+        const qList = allQuestions.filter(q => q.subjectId === subjectId && q.examType === currentExamType);
         
-        const subject = examData.subjects.find(s => s.id === subjectId);
-        if (!subject || subject.questions.length === 0) {
+        if (qList.length === 0) {
             container.innerHTML = '<p style="padding:20px; color:var(--ink-dim)">No questions uploaded yet.</p>';
             return;
         }
 
-        const kaQs = subject.questions.filter(q => q.type === 'ka');
-        const khaQs = subject.questions.filter(q => q.type === 'kha');
-        const gaQs = subject.questions.filter(q => q.type === 'ga');
+        const kaQs = qList.filter(q => q.type === 'ka');
+        const khaQs = qList.filter(q => q.type === 'kha');
+        const gaQs = qList.filter(q => q.type === 'ga');
 
         if (kaQs.length > 0) {
             container.appendChild(createSectionHeader('ক বিভাগ (অতি সংক্ষিপ্ত প্রশ্ন)'));
