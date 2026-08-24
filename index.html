@@ -1,244 +1,516 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Political Science - Third Year</title>
-    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>স্মার্ট পাঠশালা - Political Science</title>
     
-    <!-- Tailwind config for manual dark mode -->
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS for legacy components -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
-        }
-    </script>
-    
-    <!-- Set Dark Mode BEFORE rendering to prevent flash -->
-    <script>
-        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark')
+            theme: {
+                extend: {}
+            }
         }
     </script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Noto Serif (English) & Hind Siliguri (Bengali Text) -->
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    <!-- Noto Sans Bengali restricted ONLY to numbers using the text parameter trick -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&text=0123456789০১২৩৪৫৬৭৮৯&display=swap" rel="stylesheet">
+    <!-- Marked for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
-        body {
-            /* Font cascade: English -> Bengali Numbers -> Bengali Text */
-            font-family: 'Noto Serif', 'Noto Sans Bengali', 'Hind Siliguri', serif;
-            /* Light Mode Default Background */
-            background-image: linear-gradient(rgba(241, 245, 249, 0.85), rgba(241, 245, 249, 0.85)), url('https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            color: #1e293b;
-            min-height: 100vh;
-            transition: background-image 0.3s ease, color 0.3s ease;
-        }
 
-        /* Dark Mode Background */
-        html.dark body {
-            background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80');
-            color: #f8fafc;
-        }
+  :root{
+    --ink:#F4EFE3;
+    --ink-dim:#C9C2AE;
+    --bg:#161C2E;
+    --bg-deep:#101526;
+    --gold:#E4A335;
+    --maroon:#8C2E42;
+    --teal:#2C6B5E;
+    --line: rgba(244,239,227,0.14);
+  }
+  [data-theme="light"]{
+    --ink:#241C10;
+    --ink-dim:#7A6E56;
+    --bg:#F3EEE1;
+    --bg-deep:#E8E0CC;
+    --gold:#B9791E;
+    --line: rgba(36,28,16,0.12);
+  }
+  button{
+    appearance:none;
+    -webkit-appearance:none;
+    background:none;
+    border:none;
+    outline:none;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{
+    height:100%;
+    background:var(--bg-deep);
+    overscroll-behavior:none;
+  }
+  body{
+    font-family:'Hind Siliguri', sans-serif;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
 
-        @media (min-width: 768px) {
-            .glass-card {
-                background: rgba(248, 250, 252, 0.95);
-                backdrop-filter: blur(10px);
-                border: 1px solid rgba(255, 255, 255, 0.6);
-                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
-                color: #1e293b;
-            }
-            html.dark .glass-card {
-                background: rgba(30, 41, 59, 0.85);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-                color: #f8fafc;
-            }
-        }
-        @media (max-width: 767px) {
-            .glass-card {
-                background: #f8fafc;
-                color: #1e293b;
-            }
-            html.dark .glass-card {
-                background: #0f172a;
-                color: #f8fafc;
-            }
-        }
+  .app-frame{
+    position:relative;
+    width:100%;
+    max-width:430px;
+    height:100dvh;
+    max-height:932px;
+    overflow:hidden;
+    border-radius:0;
+    background:var(--bg-deep);
+  }
 
-        .subject-card {
-            transition: all 0.3s ease;
-        }
-        .subject-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-color: #3b82f6;
-        }
-        
-        html.dark .subject-card:hover {
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-        }
+  .page{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    padding:22px 18px 16px;
+    overflow:hidden;
+    color:var(--ink);
+    background:
+      radial-gradient(120% 60% at 50% -10%, rgba(228,163,53,0.10), transparent 60%),
+      var(--bg);
+    transition:background 0.25s ease, color 0.25s ease, transform 0.32s cubic-bezier(.4,0,.2,1);
+    transform:translateX(100%);
+    z-index:1;
+  }
+  .page.home{ transform:translateX(0); z-index:2; }
+  .page.active{ transform:translateX(0); z-index:3; }
+  .page.exit{ transform:translateX(-28%); z-index:1; }
 
+  /* ---------- Home screen ---------- */
+  header{
+    flex:0 0 auto;
+    padding:0 2px 16px;
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:14px;
+  }
+  .theme-toggle{
+    flex:0 0 auto;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:transparent;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    color:var(--ink);
+    margin-top:1px;
+  }
+  .theme-toggle:hover{ border-color: var(--gold); }
+  .theme-toggle svg{
+    width:17px;
+    height:17px;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:1.6;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+  .theme-toggle .icon-sun{ display:none; }
+  [data-theme="light"] .theme-toggle .icon-moon{ display:none; }
+  [data-theme="light"] .theme-toggle .icon-sun{ display:block; }
+
+  header h1{
+    font-family:'Tiro Bangla', serif;
+    font-weight:400;
+    font-size:40px;
+    line-height:0.98;
+    letter-spacing:0.01em;
+  }
+  .subhead{
+    font-size:14px;
+    color:var(--ink-dim);
+    margin-top:7px;
+  }
+  .cards{
+    flex:1 1 auto;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    min-height:0;
+  }
+  .card{
+    position:relative;
+    flex:1 1 0;
+    min-height:0;
+    border-radius:18px;
+    padding:16px 18px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    overflow:hidden;
+    border:1px solid var(--line);
+    isolation:isolate;
+    width:100%;
+    text-align:left;
+    cursor:pointer;
+    font:inherit;
+    color:var(--ink);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .card:active{ transform:scale(0.985); }
+  .card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    opacity:0.9;
+    z-index:-1;
+  }
+  .c1::before{ background:linear-gradient(135deg, #9C3450 0%, #6F2035 100%); }
+  .c2::before{ background:linear-gradient(135deg, #337A6B 0%, #1F5147 100%); }
+  .c3::before{ background:linear-gradient(135deg, #E9AC46 0%, #C7862A 100%); }
+  .c3{ color:#241703; }
+
+  .motif{
+    position:absolute;
+    right:-14px;
+    top:-14px;
+    width:104px;
+    height:104px;
+    opacity:0.5;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:1.1;
+  }
+  .row-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .label-bn{
+    font-family:'Tiro Bangla', serif;
+    font-size:24px;
+    line-height:1.28;
+  }
+  .sub{
+    font-size:12.5px;
+    color:rgba(244,239,227,0.75);
+  }
+  .c3 .sub{ color:rgba(36,23,3,0.7); }
+  .arrow{
+    width:18px;
+    height:18px;
+    flex:0 0 auto;
+    stroke:currentColor;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    fill:none;
+    opacity:0.85;
+  }
+  .row-bottom{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  footer{
+    flex:0 0 auto;
+    padding-top:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:nowrap;
+    white-space:nowrap;
+    gap:6px;
+    font-size:10px;
+    color:var(--ink-dim);
+    letter-spacing:0.005em;
+  }
+  footer a{
+    color:var(--gold);
+    text-decoration:none;
+    border-bottom:1px solid rgba(228,163,53,0.4);
+    padding-bottom:1px;
+  }
+  footer .sep{ opacity:0.5; }
+
+  /* ---------- Subject-list screens ---------- */
+  .page.subjects{
+    background:
+      radial-gradient(120% 60% at 50% -10%, rgba(228,163,53,0.10), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+  }
+
+  .sub-header{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:0 2px 14px;
+  }
+  .back-btn{
+    flex:0 0 auto;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:transparent;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    color:var(--ink);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .back-btn:hover{ border-color: var(--gold); }
+  .back-btn svg{
+    width:16px; height:16px;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:2.2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+  .sub-header-text .eyebrow2{
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+  .sub-header-text h2{
+    font-family:'Tiro Bangla', serif;
+    font-weight:400;
+    font-size:19px;
+    line-height:1.15;
+    margin-top:2px;
+    color:var(--ink);
+  }
+
+  .subject-list{
+    flex:1 1 auto;
+    min-height:0;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+    padding-bottom:4px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .subject-list::-webkit-scrollbar{ width:0; }
+
+  .subject-card{
+    flex:0 0 auto;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    border-radius:14px;
+    padding:12px 14px;
+    border:none;
+    cursor:pointer;
+    color:#F4EFE3;
+    width:100%;
+    text-align:left;
+    font:inherit;
+    isolation:isolate;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .subject-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:14px;
+    z-index:-1;
+    opacity:0.94;
+  }
+  .p1 .subject-card::before{ background:linear-gradient(135deg, #9C3450 0%, #6F2035 100%); }
+  .p2 .subject-card::before{ background:linear-gradient(135deg, #337A6B 0%, #1F5147 100%); }
+  .p3 .subject-card::before{ background:linear-gradient(135deg, #E9AC46 0%, #C7862A 100%); }
+  .p3 .subject-card{ color:#241703; }
+
+  .subject-card:active{ transform:scale(0.985); }
+  .subject-name{
+    font-family:'Hind Siliguri', sans-serif;
+    font-weight:500;
+    font-size:14.5px;
+    line-height:1.42;
+  }
+  .subject-code{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.03em;
+    opacity:0.75;
+    margin-top:4px;
+  }
+  .bn-num{
+    font-family:'Noto Sans Bengali', sans-serif;
+  }
+  .subject-card .arrow{
+    opacity:0.85;
+  }
+
+
+        /* Overrides to make Claude's CSS play nice with Tailwind and our dynamic SPA */
         .qa-card {
-            border-left: 4px solid #3b82f6;
-            transition: all 0.2s ease;
-        }
-        .qa-card:hover {
-            background-color: #f1f5f9;
+            border-bottom: 1px solid var(--line);
+            padding: 16px 0;
+            text-align: left;
+            width: 100%;
         }
         
-        html.dark .qa-card:hover {
-            background-color: rgba(51, 65, 85, 0.5);
+        .qa-card:last-child {
+            border-bottom: none;
         }
-
-        .hidden {
-            display: none !important;
+        
+        .section-header {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
         }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-in forwards;
+        .section-header-line {
+            height: 1px;
+            background: var(--line);
+            flex-grow: 1;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .section-header-title {
+            padding: 0 16px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ink);
+            font-family: 'Hind Siliguri', sans-serif;
         }
-
-        /* Scrollbar styling */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); }
-        html.dark ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
-        ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.2); border-radius: 4px; }
-        html.dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.4); }
-        html.dark ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.5); }
     </style>
 </head>
-<body class="antialiased selection:bg-blue-200 selection:text-blue-900 dark:selection:bg-blue-900 dark:selection:text-blue-200">
-
-    <div class="max-w-7xl mx-auto md:px-4 sm:px-6 lg:px-8 md:py-12 min-h-screen flex flex-col relative">
-        
-        <!-- Dark Mode Toggle Button -->
-        <div id="theme-toggle-container" class="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 fade-in">
-            <button id="theme-toggle" type="button" class="text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none rounded-full p-2.5 transition-colors border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
-                <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-                <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.22 4.22a1 1 0 011.415 0l.884.884a1 1 0 01-1.414 1.415l-.884-.885a1 1 0 010-1.414zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zm-4.22 4.22a1 1 0 010 1.415l-.884.884a1 1 0 11-1.414-1.414l.884-.884a1 1 0 011.415 0zM10 16a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-4.22-4.22a1 1 0 01-1.415 0l-.884-.884a1 1 0 011.414-1.415l.884.885a1 1 0 010 1.414zM2 10a1 1 0 011-1h1a1 1 0 110 2H3a1 1 0 01-1-1zm4.22-4.22a1 1 0 010-1.415l.884-.884a1 1 0 011.414 1.414l-.884.884a1 1 0 01-1.415 0z"></path><path fill-rule="evenodd" d="M10 14a4 4 0 100-8 4 4 0 000 8z" clip-rule="evenodd"></path></svg>
-            </button>
+<body>
+  <div class="app-frame" id="appFrame">
+      <div class="page home active" data-page="home">
+      <header>
+        <div>
+          <h1>Third Year</h1>
+          <div class="subhead">Political Science, Honours</div>
         </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle day and night mode">
+          <svg class="icon-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M4.6 4.6l1.85 1.85M17.55 17.55l1.85 1.85M2.5 12h2.6M18.9 12h2.6M4.6 19.4l1.85-1.85M17.55 6.45l1.85-1.85"/></svg>
+        </button>
+      </header>
 
-        <!-- Header -->
-        <header id="page-header" class="text-center mb-16 fade-in px-4 md:px-0 pt-12 md:pt-0">
-            <h1 class="text-4xl md:text-5xl font-bold text-slate-800 dark:text-white mb-4 tracking-tight drop-shadow-lg dark:drop-shadow-none">
-                Political Science Department
-            </h1>
-            <p class="text-xl text-blue-600 dark:text-blue-200 font-medium">Honours Third Year Study Materials</p>
-        </header>
-
-        <!-- Main View: The Three Rectangular Cards -->
-        <div id="main-view" class="grid grid-cols-1 md:grid-cols-3 gap-8 flex-grow content-center fade-in px-4 md:px-0 py-12 md:py-0">
-            <!-- Card 1 -->
-            <button onclick="openExam('incourse1')" class="glass-card rounded-2xl p-8 text-center cursor-pointer group hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center min-h-[250px]">
-                <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mb-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-500 transition-colors duration-300">
-                    <svg class="w-8 h-8 text-blue-600 dark:text-blue-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                </div>
-                <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Third Year 1st Incourse</h2>
-                <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm font-medium">View subjects and questions</p>
-            </button>
-
-            <!-- Card 2 -->
-            <button onclick="openExam('incourse2')" class="glass-card rounded-2xl p-8 text-center cursor-pointer group hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center min-h-[250px]">
-                <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 rounded-full flex items-center justify-center mb-6 group-hover:bg-emerald-600 dark:group-hover:bg-emerald-500 transition-colors duration-300">
-                    <svg class="w-8 h-8 text-emerald-600 dark:text-emerald-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                </div>
-                <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Third Year 2nd Incourse</h2>
-                <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm font-medium">View subjects and questions</p>
-            </button>
-
-            <!-- Card 3 -->
-            <button onclick="openExam('test')" class="glass-card rounded-2xl p-8 text-center cursor-pointer group hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center min-h-[250px]">
-                <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/50 rounded-full flex items-center justify-center mb-6 group-hover:bg-purple-600 dark:group-hover:bg-purple-500 transition-colors duration-300">
-                    <svg class="w-8 h-8 text-purple-600 dark:text-purple-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
-                </div>
-                <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Third Year Test Exam</h2>
-                <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm font-medium">View subjects and questions</p>
-            </button>
-        </div>
-
-        <!-- 1st Incourse Subjects View -->
-        <div id="subjects-view" class="hidden glass-card md:rounded-2xl px-4 py-6 md:p-10 fade-in min-h-screen md:min-h-0 flex-grow">
-            <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-200 dark:border-slate-700">
-                <h2 id="subjects-view-title" class="text-3xl font-bold text-slate-800 dark:text-white">Subjects</h2>
-                <button onclick="backToMain()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-medium transition hidden md:flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    Back
-                </button>
+      <div class="cards">
+        <button class="card c1" onclick="openExam('1st_incourse')">
+          <svg class="motif" viewBox="0 0 100 100"><path d="M50 6c8 14 8 24 0 38-8 14-8 24 0 38"/><path d="M50 6c-8 14-8 24 0 38 8 14 8 24 0 38"/><circle cx="50" cy="50" r="4"/></svg>
+          <div class="row-top">
+            <div>
+              <div class="label-bn">Third Year<br>1st Incourse</div>
             </div>
-            <div id="subjects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Subject Cards generated by JS -->
-            </div>
-        </div>
+          </div>
+          <div class="row-bottom">
+            <div class="sub">View subjects and questions</div>
+            <svg class="arrow" viewBox="0 0 24 24"><path d="M8 5l8 7-8 7"/></svg>
+          </div>
+        </button>
 
-        <!-- Questions View -->
-        <div id="questions-view" class="hidden glass-card md:rounded-2xl px-4 py-6 md:p-10 fade-in max-w-4xl mx-auto w-full min-h-screen md:min-h-0 flex-grow">
-            <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-4 border-b border-slate-200 dark:border-slate-700 gap-4">
-                <h2 id="current-subject-title" class="text-2xl font-bold text-slate-800 dark:text-white leading-tight">Subject Name</h2>
-                <button onclick="backToSubjects()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-medium transition hidden md:flex items-center gap-2 whitespace-nowrap self-start">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    Subjects
-                </button>
+        <button class="card c2" onclick="openExam('2nd_incourse')">
+          <svg class="motif" viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="4"/><circle cx="50" cy="50" r="22"/></svg>
+          <div class="row-top">
+            <div>
+              <div class="label-bn">Third Year<br>2nd Incourse</div>
             </div>
+          </div>
+          <div class="row-bottom">
+            <div class="sub">View subjects and questions</div>
+            <svg class="arrow" viewBox="0 0 24 24"><path d="M8 5l8 7-8 7"/></svg>
+          </div>
+        </button>
 
-            <div id="questions-container" class="space-y-10">
-                <!-- Content injected here -->
+        <button class="card c3" onclick="openExam('test_exam')">
+          <svg class="motif" viewBox="0 0 100 100"><path d="M15 60 Q50 10 85 60" /><path d="M15 60 L85 60" /></svg>
+          <div class="row-top">
+            <div>
+              <div class="label-bn">Third Year<br>Test Exam</div>
             </div>
-        </div>
+          </div>
+          <div class="row-bottom">
+            <div class="sub">View subjects and questions</div>
+            <svg class="arrow" viewBox="0 0 24 24"><path d="M8 5l8 7-8 7"/></svg>
+          </div>
+        </button>
+      </div>
 
-        <!-- Single Answer View -->
-        <div id="single-answer-view" class="hidden glass-card md:rounded-2xl px-4 py-6 md:p-10 fade-in max-w-4xl mx-auto w-full mt-0 md:mt-4 min-h-screen md:min-h-0 flex-grow">
-            <div class="flex flex-col md:flex-row justify-between mb-8 pb-4 border-b border-slate-200 dark:border-slate-700 gap-4">
-                <h2 id="single-question-title" class="text-2xl md:text-3xl font-bold text-slate-800 dark:text-white leading-relaxed pr-4 font-['Hind_Siliguri']">Question</h2>
-                <button onclick="backToQuestions()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-medium transition hidden md:flex items-center gap-2 whitespace-nowrap self-start shrink-0">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    Questions
-                </button>
-            </div>
-            <div class="bg-transparent md:bg-white md:dark:bg-slate-900 md:rounded-xl p-0 md:p-8 md:border border-slate-200 dark:border-slate-700 md:shadow-sm">
-                <div id="single-answer-content" class="prose prose-slate dark:prose-invert max-w-none prose-p:leading-loose prose-li:leading-loose md:prose-lg text-left font-['Hind_Siliguri']">
-                    <!-- Answer injected here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <footer id="page-footer" class="mt-auto pt-12 pb-4 text-center text-slate-500 dark:text-slate-400 text-sm">
-            <p>
-                &copy; <span class="font-sans">2026</span> Political Science Department. Academic Materials. | 
-                <a href="https://www.facebook.com/funkydonkeytech" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors font-medium">
-                    Contact
-                </a>
-            </p>
-        </footer>
-
+      <footer>
+        <span>© 2026 Political Science Department. Academic Materials.</span>
+        <span class="sep">|</span>
+        <a href="https://www.facebook.com/funkydonkeytech" target="_blank" rel="noopener">Contact</a>
+      </footer>
     </div>
 
-    <script>
-        // ============================================================================
-        // STATIC DATABASE
-        // All questions and answers are stored here. No external database needed.
-        // To add materials, just tell me (the AI) what to add, and I will update this!
-        // ============================================================================
-        const allQuestions = [
+    
+      
+    <!-- SUBJECTS VIEW -->
+    <div class="page subjects" id="subjects-view">
+      <div class="sub-header">
+        <button class="back-btn" onclick="backToMain()" aria-label="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <div class="sub-header-text">
+          <div class="eyebrow2">Third Year</div>
+          <h2 id="subjects-view-title">Subjects</h2>
+        </div>
+      </div>
+      <div class="subject-list" id="subjects-list-container"></div>
+    </div>
+
+      
+    <!-- QUESTIONS VIEW -->
+    <div class="page subjects" id="questions-view">
+      <div class="sub-header">
+        <button class="back-btn" onclick="backToSubjects()" aria-label="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <div class="sub-header-text">
+          <div class="eyebrow2" id="current-exam-subtitle">Third Year</div>
+          <h2 id="current-subject-title">Subject Name</h2>
+        </div>
+      </div>
+      <div class="subject-list px-2" id="questions-list-container"></div>
+    </div>
+
+      
+    <!-- SINGLE ANSWER VIEW -->
+    <div class="page subjects" id="single-answer-view">
+      <div class="sub-header">
+        <button class="back-btn" onclick="backToQuestions()" aria-label="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <div class="sub-header-text">
+          <div class="eyebrow2">Answer</div>
+        </div>
+      </div>
+      <div class="subject-list px-2 pb-8">
+          <h2 id="single-question-title" class="text-xl md:text-2xl font-bold mb-4 text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-4 font-['Hind_Siliguri']"></h2>
+          <div id="single-answer-content" class="prose prose-slate dark:prose-invert max-w-none prose-p:leading-loose prose-li:leading-loose text-left font-['Hind_Siliguri']"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const allQuestions = [
           {
                     "id": "q${qIdCounter++}",
                     "examType": "incourse1",
@@ -704,291 +976,256 @@
                     "a": "**ভূমিকা:**\n\nবেসামরিকরণ প্রক্রিয়া হলো এমন একটি রাজনৈতিক ও সাংবিধানিক ব্যবস্থা যেখানে রাষ্ট্রের সর্বোচ্চ ক্ষমতা সামরিক বাহিনীর হাতে না থেকে নির্বাচিত বেসামরিক নেতৃত্বের হাতে থাকে। বাংলাদেশের ইতিহাসে এ প্রক্রিয়া গণতন্ত্রের স্থায়িত্বের জন্য অত্যন্ত গুরুত্বপূর্ণ। ১৯৭৫-১৯৯০ সময়কালে বাংলাদেশে সামরিক শাসন চালু ছিল, যা ১৯৯০ সালের গণঅভ্যুত্থানের মাধ্যমে অবসান ঘটে এবং ১৯৯১ সালে সংসদীয় গণতন্ত্র পুনঃপ্রবর্তিত হয়।\\[[jamaat-e-islami](https://www.jamaat-e-islami.org/news-details.php?category=5&news=17848)\\]\n\n**মূল বিষয়বস্তু:**\n\n*   **সংজ্ঞা:** বেসামরিকরণ মানে হলো সামরিক শাসনের অবসান ঘটিয়ে গণতান্ত্রিকভাবে নির্বাচিত বেসামরিক সরকার প্রতিষ্ঠা ও শক্তিশালী করা। এটি গণতন্ত্রের স্থায়িত্ব ও সংবিধানের শাসন নিশ্চিত করতে অপরিহার্য।\\[[jamaat-e-islami](https://www.jamaat-e-islami.org/news-details.php?category=5&news=17848)\\]\n\n*   **বাংলাদেশের প্রেক্ষিত:**\n    \n    *   ১৯৭৫-১৯৯০ সময়কালে বাংলাদেশে সামরিক শাসন (জিয়াউর রহমান, এরশাদ) চালু ছিল। এ সময় সংবিধান স্থগিত করা হয়, রাজনৈতিক দল নিষিদ্ধ করা হয় এবং সামরিক আইন জারি করা হয়।\n    \n    *   ১৯৯০ সালের গণঅভ্যুত্থানের মাধ্যমে সামরিক শাসনের অবসান ঘটে এবং ১৯৯১ সালে সংসদীয় গণতন্ত্র পুনঃপ্রবর্তিত হয়।\\[[jamaat-e-islami](https://www.jamaat-e-islami.org/news-details.php?category=5&news=17848)\\]\n\n*   **প্রক্রিয়ার উপাদান:**\n    \n    *   _সামরিক বাহিনীর রাজনীতি থেকে দূরে রাখা:_ সংবিধানে সামরিক বাহিনীর রাজনৈতিক কার্যক্রম নিষিদ্ধ করা। এটি সামরিক বাহিনীকে রাজনীতির বাইরে রাখতে সহায়ক।\n    \n    *   _নির্বাচিত সরকার:_ নিয়মিত, সুষ্ঠু ও গ্রহণযোগ্য নির্বাচনের মাধ্যমে বেসামরিক সরকার গঠন। এটি গণতান্ত্রিক জবাবদিহিতা নিশ্চিত করে।\n    \n    *   _প্রাতিষ্ঠানিক সংস্কার:_ নির্বাচন কমিশন, বিচার বিভাগ ও সংসদের স্বাধীনতা নিশ্চিত করা। এটি গণতান্ত্রিক প্রক্রিয়াকে শক্তিশালী করে।\n    \n    *   _নাগরিক সমাজের ভূমিকা:_ গণমাধ্যম, শিক্ষা প্রতিষ্ঠান ও এনজিওগুলোর মাধ্যমে গণতান্ত্রিক চর্চা জোরদার করা। এটি নাগরিকদের গণতান্ত্রিক চেতনা জাগ্রত করে।\n\n*   **চ্যালেঞ্জ:** সামরিক বাহিনীর প্রভাব, রাজনৈতিক অস্থিরতা, নির্বাচন নিয়ে বিতর্ক বেসামরিকরণ প্রক্রিয়াকে বাধাগ্রস্ত করতে পারে। বাংলাদেশে মাঝেমধ্যে সামরিক বাহিনীর রাজনৈতিক হস্তক্ষেপের আশঙ্কা দেখা দেয়, যা গণতন্ত্রের স্থায়িত্বকে হুমকির মুখে ফেলে।\n\n*   **আন্তর্জাতিক প্রেক্ষিত:** বিশ্বের অনেক দেশে (যেমন: পাকিস্তান, মিয়ানমার, থাইল্যান্ড) সামরিক শাসন ও বেসামরিকরণ প্রক্রিয়া দেখা গেছে। সফল বেসামরিকরণের জন্য প্রাতিষ্ঠানিক সংস্কার, নাগরিক সচেতনতা ও আন্তর্জাতিক সহযোগিতা প্রয়োজন।\n\n**উপসংহার:**\n\nবেসামরিকরণ প্রক্রিয়া বাংলাদেশে গণতন্ত্রের স্থায়িত্ব ও সংবিধানের শাসন নিশ্চিত করতে অপরিহার্য। ১৯৯১ সাল থেকে এ প্রক্রিয়া অব্যাহত থাকলেও নিয়মিত সংস্কার ও নাগরিক সচেতনতার মাধ্যমে এটি আরও শক্তিশালী করা প্রয়োজন। সামরিক বাহিনীকে রাজনীতির বাইরে রাখা, নির্বাচন কমিশন ও বিচার বিভাগের স্বাধীনতা নিশ্চিত করা এবং নাগরিক সমাজের সক্রিয় অংশগ্রহণ বেসামরিকরণ প্রক্রিয়াকে সফল করতে সহায়ক হবে।\\[[jamaat-e-islami](https://www.jamaat-e-islami.org/news-details.php?category=5&news=17848)\\]\n\n* * *\n\n* * *\n\n**ভূমিকা:**\n\nবেসামরিকরণ প্রক্রিয়া হলো এমন একটি রাজনৈতিক ও সাংবিধানিক ব্যবস্থা যেখানে রাষ্ট্রের সর্বোচ্চ ক্ষমতা সামরিক বাহিনীর হাতে না থেকে নির্বাচিত বেসামরিক নেতৃত্বের হাতে থাকে। বাংলাদেশের ইতিহাসে এ প্রক্রিয়া গণতন্ত্রের স্থায়িত্বের জন্য অত্যন্ত গুরুত্বপূর্ণ।\\[[banglastream](https://banglastream.net/op-ed/column/bshmoresyrap)\\]\n\n**মূল বিষয়বস্তু:**\n\n*   **সংজ্ঞা:** বেসামরিকরণ মানে হলো সামরিক শাসনের অবসান ঘটিয়ে গণতান্ত্রিকভাবে নির্বাচিত বেসামরিক সরকার প্রতিষ্ঠা ও শক্তিশালী করা।\\[[banglastream](https://banglastream.net/op-ed/column/bshmoresyrap)\\]\n\n*   **বাংলাদেশের প্রেক্ষিত:**\n    \n    *   ১৯৭৫-১৯৯০ সময়কালে বাংলাদেশে সামরিক শাসন (জিয়াউর রহমান, এরশাদ) চালু ছিল।\n    \n    *   ১৯৯০ সালের গণঅভ্যুত্থানের মাধ্যমে সামরিক শাসনের অবসান ঘটে এবং ১৯৯১ সালে সংসদীয় গণতন্ত্র পুনঃপ্রবর্তিত হয়।\\[[banglastream](https://banglastream.net/op-ed/column/bshmoresyrap)\\]\n\n*   **প্রক্রিয়ার উপাদান:**\n    \n    *   _সামরিক বাহিনীর রাজনীতি থেকে দূরে রাখা:_ সংবিধানে সামরিক বাহিনীর রাজনৈতিক কার্যক্রম নিষিদ্ধ করা।\n    \n    *   _নির্বাচিত সরকার:_ নিয়মিত, সুষ্ঠু ও গ্রহণযোগ্য নির্বাচনের মাধ্যমে বেসামরিক সরকার গঠন।\n    \n    *   _প্রাতিষ্ঠানিক সংস্কার:_ নির্বাচন কমিশন, বিচার বিভাগ ও সংসদের স্বাধীনতা নিশ্চিত করা।\n    \n    *   _নাগরিক সমাজের ভূমিকা:_ গণমাধ্যম, শিক্ষা প্রতিষ্ঠান ও এনজিওগুলোর মাধ্যমে গণতান্ত্রিক চর্চা জোরদার করা।\n\n*   **চ্যালেঞ্জ:** সামরিক বাহিনীর প্রভাব, রাজনৈতিক অস্থিরতা, নির্বাচন নিয়ে বিতর্ক বেসামরিকরণ প্রক্রিয়াকে বাধাগ্রস্ত করতে পারে।\n\n**উপসংহার:**\n\nবেসামরিকরণ প্রক্রিয়া বাংলাদেশে গণতন্ত্রের স্থায়িত্ব ও সংবিধানের শাসন নিশ্চিত করতে অপরিহার্য। ১৯৯১ সাল থেকে এ প্রক্রিয়া অব্যাহত থাকলেও নিয়মিত সংস্কার ও নাগরিক সচেতনতার মাধ্যমে এটি আরও শক্তিশালী করা প্রয়োজন।\\[[banglastream](https://banglastream.net/op-ed/column/bshmoresyrap)\\]"
           }
 ];
+    
+    // UI State variables
+    let currentExamType = null;
+    let currentSubjectId = null;
 
-        let currentSubjectId = null;
-        let currentExamType = null;
+    // View Elements
+    const homeView = document.querySelector('.page.home');
+    const subjectsView = document.getElementById('subjects-view');
+    const questionsView = document.getElementById('questions-view');
+    const singleAnswerView = document.getElementById('single-answer-view');
+    const appFrame = document.getElementById('appFrame');
 
-        // The Master Subject List
-        const subjects = [
-            { id: '231901', title: 'বাংলাদেশের রাজনৈতিক ও সাংবিধানিক উন্নয়ন (২৩১৯০১)' },
-            { id: '231903', title: 'আন্তর্জাতিক রাজনীতির মূলনীতি (২৩১৯০৩)' },
-            { id: '231905', title: 'দক্ষিণ এশিয়ার সরকার ও রাজনীতি (ভারত, পাকিস্তান, নেপাল ও শ্রীলঙ্কা) ২৩১৯০৫' },
-            { id: '231907', title: 'রাজনীতি অধ্যয়ন পদ্ধতি (২৩১৯০৭)' },
-            { id: '231909', title: 'শান্তি ও সংঘর্ষ অধ্যয়ন পরিচিতি (২৩১৯০৯)' },
-            { id: '231911', title: 'বাংলাদেশের লোক প্রশাসন (২৩১৯১১)' },
-            { id: '231913', title: 'গবেষণা পদ্ধতি ও পরিসংখ্যান (২৩১৯১৩)' },
-            { id: '231915', title: 'রাজনৈতিক সমাজবিজ্ঞান (২৩১৯১৫)' }
-        ];
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      const isLight = appFrame.getAttribute('data-theme') === 'light';
+      appFrame.setAttribute('data-theme', isLight ? 'dark' : 'light');
+      if (isLight) {
+          document.documentElement.classList.add('dark');
+      } else {
+          document.documentElement.classList.remove('dark');
+      }
+    });
 
-        const pageHeader = document.getElementById('page-header');
-        const mainView = document.getElementById('main-view');
-        const subjectsView = document.getElementById('subjects-view');
-        const questionsView = document.getElementById('questions-view');
-        const singleAnswerView = document.getElementById('single-answer-view');
-        const themeToggleContainer = document.getElementById('theme-toggle-container');
-        const pageFooter = document.getElementById('page-footer');
+    // Helper to hide all views
+    function hideAllViews() {
+        homeView.classList.remove('active', 'exit');
+        subjectsView.classList.remove('active');
+        questionsView.classList.remove('active');
+        singleAnswerView.classList.remove('active');
+    }
 
-        function doOpenExam(examType) {
-            currentExamType = examType;
-            let title = "Subjects";
-            if (examType === 'incourse1') title = "1st Incourse Subjects";
-            if (examType === 'incourse2') title = "2nd Incourse Subjects";
-            if (examType === 'test') title = "Test Exam Subjects";
-            
-            document.getElementById('subjects-view-title').textContent = title;
-            
-            pageHeader.classList.add('hidden');
-            mainView.classList.add('hidden');
-            themeToggleContainer.classList.add('hidden');
-            pageFooter.classList.add('hidden');
-            subjectsView.classList.remove('hidden');
-            renderSubjects();
-            window.scrollTo(0, 0);
-        }
+    // --- History API wrappers ---
+    function openExam(examType) {
+        history.pushState({ view: 'subjects', examType }, '', '');
+        doOpenExam(examType);
+    }
+    
+    function backToMain() {
+        history.back();
+    }
+    
+    function openSubject(id, title) {
+        history.pushState({ view: 'questions', examType: currentExamType, subjectId: id, title }, '', '');
+        doOpenSubject(id, title);
+    }
+    
+    function backToSubjects() {
+        history.back();
+    }
+    
+    function showSingleAnswer(question, answer) {
+        history.pushState({ view: 'answer', question, answer, examType: currentExamType, subjectId: currentSubjectId }, '', '');
+        doShowSingleAnswer(question, answer);
+    }
+    
+    function backToQuestions() {
+        history.back();
+    }
 
-        function doBackToMain() {
-            pageHeader.classList.remove('hidden');
-            subjectsView.classList.add('hidden');
-            questionsView.classList.add('hidden');
-            singleAnswerView.classList.add('hidden');
-            mainView.classList.remove('hidden');
-            themeToggleContainer.classList.remove('hidden');
-            pageFooter.classList.remove('hidden');
-        }
+    // --- Implementations ---
+    function doOpenExam(examType) {
+        currentExamType = examType;
+        
+        let title = '';
+        let themeClass = '';
+        if (examType === '1st_incourse') { title = '1st Incourse Subjects'; themeClass = 'p1'; }
+        else if (examType === '2nd_incourse') { title = '2nd Incourse Subjects'; themeClass = 'p2'; }
+        else if (examType === 'test_exam') { title = 'Test Exam Subjects'; themeClass = 'p3'; }
+        
+        document.getElementById('subjects-view-title').textContent = title;
+        
+        // Apply theme color to subjects view
+        subjectsView.className = 'page subjects active ' + themeClass;
+        
+        hideAllViews();
+        homeView.classList.add('exit');
+        subjectsView.classList.add('active');
+        
+        renderSubjects();
+    }
 
-        function doBackToSubjects() {
-            questionsView.classList.add('hidden');
-            subjectsView.classList.remove('hidden');
-            currentSubjectId = null;
-        }
+    function doBackToMain() {
+        hideAllViews();
+        homeView.classList.add('active'); // active translates to 0
+    }
 
-        function renderSubjects() {
-            const container = document.getElementById('subjects-grid');
-            container.innerHTML = ''; 
+    function doOpenSubject(id, title) {
+        currentSubjectId = id;
+        document.getElementById('current-subject-title').textContent = title;
+        
+        // Pass theme class to questions view
+        let themeClass = '';
+        if (currentExamType === '1st_incourse') { themeClass = 'p1'; }
+        else if (currentExamType === '2nd_incourse') { themeClass = 'p2'; }
+        else if (currentExamType === 'test_exam') { themeClass = 'p3'; }
+        questionsView.className = 'page subjects active ' + themeClass;
+        
+        hideAllViews();
+        homeView.classList.add('exit');
+        questionsView.classList.add('active');
+        
+        renderQuestions(id);
+    }
 
-            subjects.forEach(subject => {
-                const btn = document.createElement('button');
-                btn.className = 'subject-card bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 text-left hover:bg-blue-50 dark:hover:bg-slate-700 flex flex-col justify-between h-full min-h-[120px] shadow-sm';
-                btn.onclick = () => openSubject(subject.id, subject.title);
-                
-                const titleParts = subject.title.split('(');
-                const mainTitle = titleParts[0].trim();
-                const code = titleParts.length > 1 ? `(${titleParts[1]}` : '';
+    function doBackToSubjects() {
+        // Just re-open the exam view
+        doOpenExam(currentExamType);
+    }
 
-                btn.innerHTML = `
-                    <h3 class="font-semibold text-slate-800 dark:text-slate-200 text-base leading-snug break-words text-pretty font-['Hind_Siliguri']">${mainTitle}</h3>
-                    <span class="inline-block mt-3 text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded w-max max-w-full break-words text-wrap">${code}</span>
-                `;
-                container.appendChild(btn);
-            });
-        }
+    function doShowSingleAnswer(question, answer) {
+        document.getElementById('single-question-title').textContent = question;
+        document.getElementById('single-answer-content').innerHTML = marked.parse(answer);
+        
+        // Apply theme to answer view
+        let themeClass = '';
+        if (currentExamType === '1st_incourse') { themeClass = 'p1'; }
+        else if (currentExamType === '2nd_incourse') { themeClass = 'p2'; }
+        else if (currentExamType === 'test_exam') { themeClass = 'p3'; }
+        singleAnswerView.className = 'page subjects active ' + themeClass;
+        
+        hideAllViews();
+        homeView.classList.add('exit');
+        singleAnswerView.classList.add('active');
+    }
 
-        function doOpenSubject(id, title) {
-            currentSubjectId = id;
-            subjectsView.classList.add('hidden');
-            questionsView.classList.remove('hidden');
-            document.getElementById('current-subject-title').textContent = title;
-            
-            renderQuestions(id);
-            window.scrollTo(0, 0);
-        }
-
-        function renderQuestions(subjectId) {
-            const container = document.getElementById('questions-container');
-            container.innerHTML = '';
-
-            const subjectData = allQuestions.filter(q => 
-                q.subjectId === subjectId && q.examType === currentExamType
-            );
-
-            if (subjectData.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-12 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
-                        <svg class="w-12 h-12 text-slate-400 dark:text-slate-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        <h3 class="text-lg font-medium text-slate-700 dark:text-slate-300">No content available</h3>
-                        <p class="text-slate-500 dark:text-slate-400 mt-1">Ask me to add questions for this subject!</p>
-                    </div>`;
-                return;
+    function doBackToQuestions() {
+        // Re-open subject to show questions
+        // We need the title of the current subject! We can find it in the data.
+        const examData = allQuestions.find(e => e.examType === currentExamType);
+        if (examData) {
+            const subjectData = examData.subjects.find(s => s.id === currentSubjectId);
+            if (subjectData) {
+                doOpenSubject(currentSubjectId, subjectData.title);
             }
+        }
+    }
 
-            const kaQs = subjectData.filter(q => q.section === 'ka');
-            const khaQs = subjectData.filter(q => q.section === 'kha');
-            const gaQs = subjectData.filter(q => q.section === 'ga');
-
-            if (kaQs.length > 0) {
-                container.appendChild(createSectionHeader('ক বিভাগ (অতি সংক্ষিপ্ত প্রশ্ন)'));
-                const kaGrid = document.createElement('div');
-                kaGrid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
-                kaQs.forEach(item => kaGrid.appendChild(createQACard(item.q, item.a, 'bg-white dark:bg-slate-800')));
-                container.appendChild(kaGrid);
-            }
-
-            if (khaQs.length > 0) {
-                container.appendChild(createSectionHeader('খ বিভাগ (সংক্ষিপ্ত প্রশ্ন)'));
-                const khaContainer = document.createElement('div');
-                khaContainer.className = 'space-y-4';
-                khaQs.forEach(item => khaContainer.appendChild(createClickableQACard(item.q, item.a)));
-                container.appendChild(khaContainer);
-            }
-
-            if (gaQs.length > 0) {
-                container.appendChild(createSectionHeader('গ বিভাগ (রচনামূলক প্রশ্ন)'));
-                const gaContainer = document.createElement('div');
-                gaContainer.className = 'space-y-4';
-                gaQs.forEach(item => gaContainer.appendChild(createClickableQACard(item.q, item.a)));
-                container.appendChild(gaContainer);
-            }
+    window.addEventListener('popstate', (event) => {
+        const state = event.state;
+        if (!state) {
+            doBackToMain();
+            return;
         }
 
-        function createSectionHeader(title) {
-            const div = document.createElement('div');
-            div.className = 'mt-10 mb-4 flex items-center';
-            div.innerHTML = `
-                <div class="h-px bg-slate-300 dark:bg-slate-700 flex-grow"></div>
-                <h3 class="px-4 text-xl font-bold text-slate-800 dark:text-slate-200 bg-transparent font-['Hind_Siliguri']">${title}</h3>
-                <div class="h-px bg-slate-300 dark:bg-slate-700 flex-grow"></div>
+        if (state.view === 'subjects') {
+            doOpenExam(state.examType);
+        } else if (state.view === 'questions') {
+            currentExamType = state.examType; 
+            doOpenSubject(state.subjectId, state.title);
+        } else if (state.view === 'answer') {
+            currentExamType = state.examType;
+            currentSubjectId = state.subjectId;
+            doShowSingleAnswer(state.question, state.answer);
+        }
+    });
+
+    // --- Rendering Logic ---
+    function renderSubjects() {
+        const container = document.getElementById('subjects-list-container');
+        container.innerHTML = '';
+        
+        const examData = allQuestions.find(e => e.examType === currentExamType);
+        if (!examData || examData.subjects.length === 0) {
+            container.innerHTML = '<p style="padding:20px; color:var(--ink-dim)">No subjects available.</p>';
+            return;
+        }
+
+        examData.subjects.forEach(subject => {
+            const btn = document.createElement('button');
+            btn.className = 'subject-card';
+            // Use the subject's id as the course code placeholder since actual code isn't in data yet, or just hardcode if needed
+            btn.innerHTML = `
+              <div>
+                <div class="subject-name">${subject.title}</div>
+                <div class="subject-code">Code: <span class="bn-num">${subject.id || '2319**'}</span></div>
+              </div>
+              <svg class="arrow" viewBox="0 0 24 24"><path d="M8 5l8 7-8 7"/></svg>
             `;
-            return div;
+            btn.addEventListener('click', () => openSubject(subject.id, subject.title));
+            container.appendChild(btn);
+        });
+    }
+
+    function renderQuestions(subjectId) {
+        const container = document.getElementById('questions-list-container');
+        container.innerHTML = '';
+        
+        const examData = allQuestions.find(e => e.examType === currentExamType);
+        if (!examData) return;
+        
+        const subject = examData.subjects.find(s => s.id === subjectId);
+        if (!subject || subject.questions.length === 0) {
+            container.innerHTML = '<p style="padding:20px; color:var(--ink-dim)">No questions uploaded yet.</p>';
+            return;
         }
 
-        function createQACard(question, answer, bgClass) {
-            const card = document.createElement('div');
-            card.className = `qa-card ${bgClass} p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm font-['Hind_Siliguri']`;
-            card.innerHTML = `
-                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2">${question}</h4>
-                <div class="text-slate-600 dark:text-slate-400 text-sm md:text-base leading-relaxed">
-                    <span class="font-bold text-blue-600 dark:text-blue-400 mr-1 text-sm">উত্তর:</span> 
-                    ${answer}
-                </div>
-            `;
-            return card;
+        const kaQs = subject.questions.filter(q => q.type === 'ka');
+        const khaQs = subject.questions.filter(q => q.type === 'kha');
+        const gaQs = subject.questions.filter(q => q.type === 'ga');
+
+        if (kaQs.length > 0) {
+            container.appendChild(createSectionHeader('ক বিভাগ (অতি সংক্ষিপ্ত প্রশ্ন)'));
+            kaQs.forEach(item => container.appendChild(createQACard(item.q, item.a)));
         }
 
-        function createClickableQACard(question, answer) {
-            const card = document.createElement('button');
-            card.className = `w-full bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden text-left p-5 hover:bg-blue-50 dark:hover:bg-slate-700 hover:border-blue-300 dark:hover:border-blue-500 transition-all focus:outline-none group font-['Hind_Siliguri']`;
+        if (khaQs.length > 0) {
+            container.appendChild(createSectionHeader('খ বিভাগ (সংক্ষিপ্ত প্রশ্ন)'));
+            khaQs.forEach(item => container.appendChild(createQACard(item.q, item.a, true)));
+        }
+
+        if (gaQs.length > 0) {
+            container.appendChild(createSectionHeader('গ বিভাগ (রচনামূলক প্রশ্ন)'));
+            gaQs.forEach(item => container.appendChild(createQACard(item.q, item.a, true)));
+        }
+    }
+
+    function createSectionHeader(title) {
+        const div = document.createElement('div');
+        div.className = 'section-header';
+        div.innerHTML = `
+            <div class="section-header-line"></div>
+            <h3 class="section-header-title">${title}</h3>
+            <div class="section-header-line"></div>
+        `;
+        return div;
+    }
+
+    function createQACard(question, answer, clickable = false) {
+        const card = document.createElement(clickable ? 'button' : 'div');
+        card.className = 'qa-card group';
+        if (clickable) {
             card.innerHTML = `
-                <div class="flex items-start justify-between gap-4">
-                    <h4 class="text-lg font-bold text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">${question}</h4>
-                    <span class="text-blue-500 dark:text-blue-400 mt-1 shrink-0 bg-blue-50 dark:bg-blue-900/30 p-1.5 rounded-full group-hover:bg-blue-600 dark:group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    </span>
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+                    <h4 style="font-size:16px; font-weight:600; color:var(--ink); line-height:1.4;">${question}</h4>
+                    <svg style="width:20px; height:20px; flex-shrink:0; stroke:var(--gold); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; margin-top:2px;" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg>
                 </div>
             `;
             card.addEventListener('click', () => showSingleAnswer(question, answer));
-            return card;
-        }
-
-        function doShowSingleAnswer(question, answer) {
-            questionsView.classList.add('hidden');
-            document.getElementById('single-question-title').textContent = question;
-            document.getElementById('single-answer-content').innerHTML = marked.parse(answer);
-            singleAnswerView.classList.remove('hidden');
-            window.scrollTo(0, 0);
-        }
-
-        function doBackToQuestions() {
-            singleAnswerView.classList.add('hidden');
-            questionsView.classList.remove('hidden');
-            window.scrollTo(0, 0);
-        }
-
-        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
-        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
-        const themeToggleBtn = document.getElementById('theme-toggle');
-
-        if (document.documentElement.classList.contains('dark')) {
-            themeToggleLightIcon.classList.remove('hidden');
         } else {
-            themeToggleDarkIcon.classList.remove('hidden');
+            card.innerHTML = `
+                <h4 style="font-size:16px; font-weight:600; color:var(--ink); line-height:1.4; margin-bottom:8px;">${question}</h4>
+                <div style="font-size:15px; color:var(--ink-dim); line-height:1.6;">
+                    <span style="font-weight:700; color:var(--gold); margin-right:4px;">উত্তর:</span> 
+                    ${answer}
+                </div>
+            `;
         }
-
-        themeToggleBtn.addEventListener('click', function() {
-            themeToggleDarkIcon.classList.toggle('hidden');
-            themeToggleLightIcon.classList.toggle('hidden');
-
-            if (localStorage.getItem('color-theme')) {
-                if (localStorage.getItem('color-theme') === 'light') {
-                    document.documentElement.classList.add('dark');
-                    localStorage.setItem('color-theme', 'dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                    localStorage.setItem('color-theme', 'light');
-                }
-            } else {
-                if (document.documentElement.classList.contains('dark')) {
-                    document.documentElement.classList.remove('dark');
-                    localStorage.setItem('color-theme', 'light');
-                } else {
-                    document.documentElement.classList.add('dark');
-                    localStorage.setItem('color-theme', 'dark');
-                }
-            }
-        });
-    
-        // --- HTML5 History API Integration ---
-
-        // Initialize history state on load
-        if (!history.state) {
-            history.replaceState({ view: 'main' }, '', '');
-        }
-
-        function openExam(examType) {
-            history.pushState({ view: 'subjects', examType }, '', '');
-            doOpenExam(examType);
-        }
-
-        function backToMain() {
-            if (history.state && history.state.view !== 'main') {
-                history.back();
-            } else {
-                doBackToMain();
-            }
-        }
-
-        function openSubject(id, title) {
-            // Include examType in the state since renderQuestions depends on currentExamType
-            history.pushState({ view: 'questions', subjectId: id, title, examType: currentExamType }, '', '');
-            doOpenSubject(id, title);
-        }
-
-        function backToSubjects() {
-            history.back();
-        }
-
-        function showSingleAnswer(question, answer) {
-            history.pushState({ view: 'answer', question, answer, examType: currentExamType, subjectId: currentSubjectId }, '', '');
-            doShowSingleAnswer(question, answer);
-        }
-
-        function backToQuestions() {
-            history.back();
-        }
-
-        window.addEventListener('popstate', (event) => {
-            const state = event.state;
-            if (!state) return;
-
-            // Prevent views from overlapping when navigating backwards
-            subjectsView.classList.add('hidden');
-            questionsView.classList.add('hidden');
-            singleAnswerView.classList.add('hidden');
-
-            if (state.view === 'main') {
-                doBackToMain();
-            } else if (state.view === 'subjects') {
-                doOpenExam(state.examType);
-            } else if (state.view === 'questions') {
-                // Ensure currentExamType is set correctly in case of direct refresh/navigation
-                currentExamType = state.examType; 
-                doOpenSubject(state.subjectId, state.title);
-            } else if (state.view === 'answer') {
-                currentExamType = state.examType;
-                currentSubjectId = state.subjectId;
-                doShowSingleAnswer(state.question, state.answer);
-            }
-        });
-
-    </script>
+        return card;
+    }
+  </script>
 </body>
 </html>
