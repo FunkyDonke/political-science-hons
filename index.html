@@ -955,6 +955,11 @@
             const state = event.state;
             if (!state) return;
 
+            // Prevent views from overlapping when navigating backwards
+            subjectsView.classList.add('hidden');
+            questionsView.classList.add('hidden');
+            singleAnswerView.classList.add('hidden');
+
             if (state.view === 'main') {
                 doBackToMain();
             } else if (state.view === 'subjects') {
