@@ -367,14 +367,23 @@
 
         /* Overrides to make Claude's CSS play nice with Tailwind and our dynamic SPA */
         .qa-card {
-            border-bottom: 1px solid var(--line);
-            padding: 16px 0;
+            background: var(--bg-deep);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 16px;
             text-align: left;
             width: 100%;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        
+        .qa-card:active {
+            transform: scale(0.985);
         }
         
         .qa-card:last-child {
-            border-bottom: none;
+            margin-bottom: 0;
         }
         
         .section-header {
