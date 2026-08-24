@@ -87,13 +87,14 @@
     background:
       radial-gradient(120% 60% at 50% -10%, rgba(228,163,53,0.10), transparent 60%),
       var(--bg);
-    transition:background 0.25s ease, color 0.25s ease, transform 0.32s cubic-bezier(.4,0,.2,1);
-    transform:translateX(100%);
+    transition:background 0.25s ease, color 0.25s ease, opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
     z-index:1;
   }
-  .page.home{ transform:translateX(0); z-index:2; }
-  .page.active{ transform:translateX(0); z-index:3; }
-  .page.exit{ transform:translateX(-28%); z-index:1; }
+  .page.home{ opacity: 1; pointer-events: auto; z-index:2; }
+  .page.active{ opacity: 1; pointer-events: auto; z-index:3; }
+  .page.exit{ opacity: 1; pointer-events: none; z-index:1; }
 
   /* ---------- Home screen ---------- */
   header{
