@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Political Science - Third Year</title>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Tailwind config for manual dark mode -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    
+    <!-- Set Dark Mode BEFORE rendering to prevent flash -->
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Noto Serif (English) & Hind Siliguri (Bengali Text) -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <!-- Noto Sans Bengali restricted ONLY to numbers using the text parameter trick -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&text=0123456789০১২৩৪৫৬৭৮৯&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            /* Font cascade: English -> Bengali Numbers -> Bengali Text */
+            font-family: 'Noto Serif', 'Noto Sans Bengali', 'Hind Siliguri', serif;
+            /* Light Mode Default Background */
+            background-image: linear-gradient(rgba(241, 245, 249, 0.85), rgba(241, 245, 249, 0.85)), url('https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: #1e293b;
+            min-height: 100vh;
+            transition: background-image 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark Mode Background */
+        html.dark body {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80');
+            color: #f8fafc;
+        }
+
+        .glass-card {
+            background: rgba(248, 250, 252, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            color: #1e293b;
+        }
+        
+        html.dark .glass-card {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            color: #f8fafc;
+        }
+
+        .subject-card {
+            transition: all 0.3s ease;
+        }
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: #3b82f6;
+        }
+        
+        html.dark .subject-card:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .qa-card {
+            border-left: 4px solid #3b82f6;
+            transition: all 0.2s ease;
+        }
+        .qa-card:hover {
+            background-color: #f1f5f9;
+        }
+        
+        html.dark .qa-card:hover {
+            background-color: rgba(51, 65, 85, 0.5);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); }
+        html.dark ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.2); border-radius: 4px; }
+        html.dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.4); }
+        html.dark ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.5); }
+    </style>
+</head>
+<body class="antialiased selection:bg-blue-200 selection:text-blue-900 dark:selection:bg-blue-900 dark:selection:text-blue-200">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 min-h-screen flex flex-col relative">
+        
+        <!-- Dark Mode Toggle Button -->
+        <div id="theme-toggle-container" class="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 fade-in">
+            <button id="theme-toggle" type="button" class="text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none rounded-full p-2.5 transition-colors border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
+                <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.22 4.22a1 1 0 011.415 0l.884.884a1 1 0 01-1.414 1.415l-.884-.885a1 1 0 010-1.414zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zm-4.22 4.22a1 1 0 010 1.415l-.884.884a1 1 0 11-1.414-1.414l.884-.884a1 1 0 011.415 0zM10 16a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-4.22-4.22a1 1 0 01-1.415 0l-.884-.884a1 1 0 011.414-1.415l.884.885a1 1 0 010 1.414zM2 10a1 1 0 011-1h1a1 1 0 110 2H3a1 1 0 01-1-1zm4.22-4.22a1 1 0 010-1.415l.884-.884a1 1 0 011.414 1.414l-.884.884a1 1 0 01-1.415 0z"></path><path fill-rule="evenodd" d="M10 14a4 4 0 100-8 4 4 0 000 8z" clip-rule="evenodd"></path></svg>
+            </button>
+        </div>
+
+        <!-- Header -->
+        <header id="page-header" class="text-center mb-16 fade-in">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-800 dark:text-white mb-4 tracking-tight drop-shadow-lg dark:drop-shadow-none">
+                Political Science Department
+            </h1>
+            <p class="text-xl text-blue-600 dark:text-blue-200 font-medium">Honours Third Year Study Materials</p>
+        </header>
+
+        <!-- Main View: The Three Rectangular Cards -->
+        <div id="main-view" class="grid grid-cols-1 md:grid-cols-3 gap-8 flex-grow content-center fade-in">
+            <!-- Card 1 -->
+            <button onclick="openExam('incourse1')" class="glass-card rounded-2xl p-8 text-center cursor-pointer group hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center min-h-[250px]">
+                <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mb-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-500 transition-colors duration-300">
+                    <svg class="w-8 h-8 text-blue-600 dark:text-blue-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Third Year 1st Incourse</h2>
+                <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm font-medium">View subjects and questions</p>
+            </button>
+
+            <!-- Card 2 -->
+            <button onclick="openExam('incourse2')" class="glass-card rounded-2xl p-8 text-center cursor-pointer group hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center min-h-[250px]">
+                <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 rounded-full flex items-center justify-center mb-6 group-hover:bg-emerald-600 dark:group-hover:bg-emerald-500 transition-colors duration-300">
+                    <svg class="w-8 h-8 text-emerald-600 dark:text-emerald-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Third Year 2nd Incourse</h2>
+                <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm font-medium">View subjects and questions</p>
+            </button>
+
+            <!-- Card 3 -->
+            <button onclick="openExam('test')" class="glass-card rounded-2xl p-8 text-center cursor-pointer group hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center min-h-[250px]">
+                <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/50 rounded-full flex items-center justify-center mb-6 group-hover:bg-purple-600 dark:group-hover:bg-purple-500 transition-colors duration-300">
+                    <svg class="w-8 h-8 text-purple-600 dark:text-purple-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Third Year Test Exam</h2>
+                <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm font-medium">View subjects and questions</p>
+            </button>
+        </div>
+
+        <!-- 1st Incourse Subjects View -->
+        <div id="subjects-view" class="hidden glass-card rounded-2xl p-6 md:p-10 fade-in">
+            <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-200 dark:border-slate-700">
+                <h2 id="subjects-view-title" class="text-3xl font-bold text-slate-800 dark:text-white">Subjects</h2>
+                <button onclick="backToMain()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-medium transition flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Back
+                </button>
+            </div>
+            <div id="subjects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Subject Cards generated by JS -->
+            </div>
+        </div>
+
+        <!-- Questions View -->
+        <div id="questions-view" class="hidden glass-card rounded-2xl p-6 md:p-10 fade-in max-w-4xl mx-auto w-full">
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-4 border-b border-slate-200 dark:border-slate-700 gap-4">
+                <h2 id="current-subject-title" class="text-2xl font-bold text-slate-800 dark:text-white leading-tight">Subject Name</h2>
+                <button onclick="backToSubjects()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-medium transition flex items-center gap-2 whitespace-nowrap self-start">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Subjects
+                </button>
+            </div>
+
+            <div id="questions-container" class="space-y-10">
+                <!-- Content injected here -->
+            </div>
+        </div>
+
+        <!-- Single Answer View -->
+        <div id="single-answer-view" class="hidden glass-card rounded-2xl p-6 md:p-10 fade-in max-w-4xl mx-auto w-full mt-4">
+            <div class="flex flex-col md:flex-row justify-between mb-8 pb-4 border-b border-slate-200 dark:border-slate-700 gap-4">
+                <h2 id="single-question-title" class="text-2xl md:text-3xl font-bold text-slate-800 dark:text-white leading-relaxed pr-4 font-['Hind_Siliguri']">Question</h2>
+                <button onclick="backToQuestions()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-medium transition flex items-center gap-2 whitespace-nowrap self-start shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Questions
+                </button>
+            </div>
+            <div class="bg-white dark:bg-slate-900 rounded-xl p-6 md:p-8 border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div id="single-answer-content" class="prose prose-slate dark:prose-invert max-w-none prose-p:leading-loose prose-li:leading-loose md:prose-lg text-justify font-['Hind_Siliguri']">
+                    <!-- Answer injected here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer id="page-footer" class="mt-auto pt-12 pb-4 text-center text-slate-500 dark:text-slate-400 text-sm">
+            <p>
+                &copy; <span class="font-sans">2026</span> Political Science Department. Academic Materials. | 
+                <a href="https://www.facebook.com/funkydonkeytech" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors font-medium">
+                    Contact
+                </a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // ============================================================================
+        // STATIC DATABASE
+        // All questions and answers are stored here. No external database needed.
+        // To add materials, just tell me (the AI) what to add, and I will update this!
+        // ============================================================================
+        const allQuestions = [
+            // Example formatting of a question:
+            // { id: 'q1', examType: 'incourse1', subjectId: '231901', section: 'ka', q: 'Question text here?', a: 'Answer text here.' }
+        ];
+
+        let currentSubjectId = null;
+        let currentExamType = null;
+
+        // The Master Subject List
+        const subjects = [
+            { id: '231901', title: 'বাংলাদেশের রাজনৈতিক ও সাংবিধানিক উন্নয়ন (২৩১৯০১)' },
+            { id: '231903', title: 'আন্তর্জাতিক রাজনীতির মূলনীতি (২৩১৯০৩)' },
+            { id: '231905', title: 'দক্ষিণ এশিয়ার সরকার ও রাজনীতি (ভারত, পাকিস্তান, নেপাল ও শ্রীলঙ্কা) ২৩১৯০৫' },
+            { id: '231907', title: 'রাজনীতি অধ্যয়ন পদ্ধতি (২৩১৯০৭)' },
+            { id: '231909', title: 'শান্তি ও সংঘর্ষ অধ্যয়ন পরিচিতি (২৩১৯০৯)' },
+            { id: '231911', title: 'বাংলাদেশের লোক প্রশাসন (২৩১৯১১)' },
+            { id: '231913', title: 'গবেষণা পদ্ধতি ও পরিসংখ্যান (২৩১৯১৩)' },
+            { id: '231915', title: 'রাজনৈতিক সমাজবিজ্ঞান (২৩১৯১৫)' }
+        ];
+
+        const pageHeader = document.getElementById('page-header');
+        const mainView = document.getElementById('main-view');
+        const subjectsView = document.getElementById('subjects-view');
+        const questionsView = document.getElementById('questions-view');
+        const singleAnswerView = document.getElementById('single-answer-view');
+        const themeToggleContainer = document.getElementById('theme-toggle-container');
+        const pageFooter = document.getElementById('page-footer');
+
+        function openExam(examType) {
+            currentExamType = examType;
+            let title = "Subjects";
+            if (examType === 'incourse1') title = "1st Incourse Subjects";
+            if (examType === 'incourse2') title = "2nd Incourse Subjects";
+            if (examType === 'test') title = "Test Exam Subjects";
+            
+            document.getElementById('subjects-view-title').textContent = title;
+            
+            pageHeader.classList.add('hidden');
+            mainView.classList.add('hidden');
+            themeToggleContainer.classList.add('hidden');
+            subjectsView.classList.remove('hidden');
+            renderSubjects();
+        }
+
+        function backToMain() {
+            pageHeader.classList.remove('hidden');
+            subjectsView.classList.add('hidden');
+            questionsView.classList.add('hidden');
+            singleAnswerView.classList.add('hidden');
+            mainView.classList.remove('hidden');
+            themeToggleContainer.classList.remove('hidden');
+            pageFooter.classList.remove('hidden');
+        }
+
+        function backToSubjects() {
+            questionsView.classList.add('hidden');
+            subjectsView.classList.remove('hidden');
+            currentSubjectId = null;
+        }
+
+        function renderSubjects() {
+            const container = document.getElementById('subjects-grid');
+            container.innerHTML = ''; 
+
+            subjects.forEach(subject => {
+                const btn = document.createElement('button');
+                btn.className = 'subject-card bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 text-left hover:bg-blue-50 dark:hover:bg-slate-700 flex flex-col justify-between h-full min-h-[120px] shadow-sm';
+                btn.onclick = () => openSubject(subject.id, subject.title);
+                
+                const titleParts = subject.title.split('(');
+                const mainTitle = titleParts[0].trim();
+                const code = titleParts.length > 1 ? `(${titleParts[1]}` : '';
+
+                btn.innerHTML = `
+                    <h3 class="font-semibold text-slate-800 dark:text-slate-200 text-base leading-snug break-words text-pretty font-['Hind_Siliguri']">${mainTitle}</h3>
+                    <span class="inline-block mt-3 text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded w-max max-w-full break-words text-wrap">${code}</span>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function openSubject(id, title) {
+            currentSubjectId = id;
+            subjectsView.classList.add('hidden');
+            questionsView.classList.remove('hidden');
+            document.getElementById('current-subject-title').textContent = title;
+            
+            renderQuestions(id);
+        }
+
+        function renderQuestions(subjectId) {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            const subjectData = allQuestions.filter(q => 
+                q.subjectId === subjectId && q.examType === currentExamType
+            );
+
+            if (subjectData.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <svg class="w-12 h-12 text-slate-400 dark:text-slate-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <h3 class="text-lg font-medium text-slate-700 dark:text-slate-300">No content available</h3>
+                        <p class="text-slate-500 dark:text-slate-400 mt-1">Ask me to add questions for this subject!</p>
+                    </div>`;
+                return;
+            }
+
+            const kaQs = subjectData.filter(q => q.section === 'ka');
+            const khaQs = subjectData.filter(q => q.section === 'kha');
+            const gaQs = subjectData.filter(q => q.section === 'ga');
+
+            if (kaQs.length > 0) {
+                container.appendChild(createSectionHeader('ক বিভাগ (অতি সংক্ষিপ্ত প্রশ্ন)'));
+                const kaGrid = document.createElement('div');
+                kaGrid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+                kaQs.forEach(item => kaGrid.appendChild(createQACard(item.q, item.a, 'bg-white dark:bg-slate-800')));
+                container.appendChild(kaGrid);
+            }
+
+            if (khaQs.length > 0) {
+                container.appendChild(createSectionHeader('খ বিভাগ (সংক্ষিপ্ত প্রশ্ন)'));
+                const khaContainer = document.createElement('div');
+                khaContainer.className = 'space-y-4';
+                khaQs.forEach(item => khaContainer.appendChild(createClickableQACard(item.q, item.a)));
+                container.appendChild(khaContainer);
+            }
+
+            if (gaQs.length > 0) {
+                container.appendChild(createSectionHeader('গ বিভাগ (রচনামূলক প্রশ্ন)'));
+                const gaContainer = document.createElement('div');
+                gaContainer.className = 'space-y-4';
+                gaQs.forEach(item => gaContainer.appendChild(createClickableQACard(item.q, item.a)));
+                container.appendChild(gaContainer);
+            }
+        }
+
+        function createSectionHeader(title) {
+            const div = document.createElement('div');
+            div.className = 'mt-10 mb-4 flex items-center';
+            div.innerHTML = `
+                <div class="h-px bg-slate-300 dark:bg-slate-700 flex-grow"></div>
+                <h3 class="px-4 text-xl font-bold text-slate-800 dark:text-slate-200 bg-transparent font-['Hind_Siliguri']">${title}</h3>
+                <div class="h-px bg-slate-300 dark:bg-slate-700 flex-grow"></div>
+            `;
+            return div;
+        }
+
+        function createQACard(question, answer, bgClass) {
+            const card = document.createElement('div');
+            card.className = `qa-card ${bgClass} p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm font-['Hind_Siliguri']`;
+            card.innerHTML = `
+                <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2">${question}</h4>
+                <div class="text-slate-600 dark:text-slate-400 text-sm md:text-base leading-relaxed">
+                    <span class="font-bold text-blue-600 dark:text-blue-400 mr-1 text-sm">উত্তর:</span> 
+                    ${answer}
+                </div>
+            `;
+            return card;
+        }
+
+        function createClickableQACard(question, answer) {
+            const card = document.createElement('button');
+            card.className = `w-full bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden text-left p-5 hover:bg-blue-50 dark:hover:bg-slate-700 hover:border-blue-300 dark:hover:border-blue-500 transition-all focus:outline-none group font-['Hind_Siliguri']`;
+            card.innerHTML = `
+                <div class="flex items-start justify-between gap-4">
+                    <h4 class="text-lg font-bold text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">${question}</h4>
+                    <span class="text-blue-500 dark:text-blue-400 mt-1 shrink-0 bg-blue-50 dark:bg-blue-900/30 p-1.5 rounded-full group-hover:bg-blue-600 dark:group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </span>
+                </div>
+            `;
+            card.addEventListener('click', () => showSingleAnswer(question, answer));
+            return card;
+        }
+
+        function showSingleAnswer(question, answer) {
+            questionsView.classList.add('hidden');
+            document.getElementById('single-question-title').textContent = question;
+            document.getElementById('single-answer-content').innerHTML = marked.parse(answer);
+            singleAnswerView.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function backToQuestions() {
+            singleAnswerView.classList.add('hidden');
+            questionsView.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+
+        if (document.documentElement.classList.contains('dark')) {
+            themeToggleLightIcon.classList.remove('hidden');
+        } else {
+            themeToggleDarkIcon.classList.remove('hidden');
+        }
+
+        themeToggleBtn.addEventListener('click', function() {
+            themeToggleDarkIcon.classList.toggle('hidden');
+            themeToggleLightIcon.classList.toggle('hidden');
+
+            if (localStorage.getItem('color-theme')) {
+                if (localStorage.getItem('color-theme') === 'light') {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                }
+            } else {
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
