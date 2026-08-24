@@ -51,19 +51,30 @@
             color: #f8fafc;
         }
 
-        .glass-card {
-            background: rgba(248, 250, 252, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
-            color: #1e293b;
+        @media (min-width: 768px) {
+            .glass-card {
+                background: rgba(248, 250, 252, 0.95);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.6);
+                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+                color: #1e293b;
+            }
+            html.dark .glass-card {
+                background: rgba(30, 41, 59, 0.85);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+                color: #f8fafc;
+            }
         }
-        
-        html.dark .glass-card {
-            background: rgba(30, 41, 59, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            color: #f8fafc;
+        @media (max-width: 767px) {
+            .glass-card {
+                background: #f8fafc;
+                color: #1e293b;
+            }
+            html.dark .glass-card {
+                background: #0f172a;
+                color: #f8fafc;
+            }
         }
 
         .subject-card {
@@ -116,7 +127,7 @@
 </head>
 <body class="antialiased selection:bg-blue-200 selection:text-blue-900 dark:selection:bg-blue-900 dark:selection:text-blue-200">
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 min-h-screen flex flex-col relative">
+    <div class="max-w-7xl mx-auto md:px-4 sm:px-6 lg:px-8 md:py-12 min-h-screen flex flex-col relative">
         
         <!-- Dark Mode Toggle Button -->
         <div id="theme-toggle-container" class="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 fade-in">
@@ -127,7 +138,7 @@
         </div>
 
         <!-- Header -->
-        <header id="page-header" class="text-center mb-16 fade-in">
+        <header id="page-header" class="text-center mb-16 fade-in px-4 md:px-0 pt-12 md:pt-0">
             <h1 class="text-4xl md:text-5xl font-bold text-slate-800 dark:text-white mb-4 tracking-tight drop-shadow-lg dark:drop-shadow-none">
                 Political Science Department
             </h1>
@@ -135,7 +146,7 @@
         </header>
 
         <!-- Main View: The Three Rectangular Cards -->
-        <div id="main-view" class="grid grid-cols-1 md:grid-cols-3 gap-8 flex-grow content-center fade-in">
+        <div id="main-view" class="grid grid-cols-1 md:grid-cols-3 gap-8 flex-grow content-center fade-in px-4 md:px-0 py-12 md:py-0">
             <!-- Card 1 -->
             <button onclick="openExam('incourse1')" class="glass-card rounded-2xl p-8 text-center cursor-pointer group hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center min-h-[250px]">
                 <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mb-6 group-hover:bg-blue-600 dark:group-hover:bg-blue-500 transition-colors duration-300">
@@ -165,7 +176,7 @@
         </div>
 
         <!-- 1st Incourse Subjects View -->
-        <div id="subjects-view" class="hidden glass-card rounded-2xl p-6 md:p-10 fade-in">
+        <div id="subjects-view" class="hidden glass-card md:rounded-2xl p-4 pt-20 md:p-10 fade-in min-h-screen md:min-h-0 flex-grow">
             <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-200 dark:border-slate-700">
                 <h2 id="subjects-view-title" class="text-3xl font-bold text-slate-800 dark:text-white">Subjects</h2>
                 <button onclick="backToMain()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-medium transition flex items-center gap-2">
@@ -731,6 +742,7 @@
             themeToggleContainer.classList.add('hidden');
             subjectsView.classList.remove('hidden');
             renderSubjects();
+            window.scrollTo(0, 0);
         }
 
         function doBackToMain() {
@@ -777,6 +789,7 @@
             document.getElementById('current-subject-title').textContent = title;
             
             renderQuestions(id);
+            window.scrollTo(0, 0);
         }
 
         function renderQuestions(subjectId) {
