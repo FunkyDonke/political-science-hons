@@ -1181,9 +1181,9 @@
             return;
         }
 
-        const kaQs = qList.filter(q => q.type === 'ka');
-        const khaQs = qList.filter(q => q.type === 'kha');
-        const gaQs = qList.filter(q => q.type === 'ga');
+        const kaQs = qList.filter(q => q.section === 'ka');
+        const khaQs = qList.filter(q => q.section === 'kha');
+        const gaQs = qList.filter(q => q.section === 'ga');
 
         if (kaQs.length > 0) {
             container.appendChild(createSectionHeader('ক বিভাগ (অতি সংক্ষিপ্ত প্রশ্ন)'));
