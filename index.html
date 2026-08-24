@@ -717,7 +717,7 @@
         const themeToggleContainer = document.getElementById('theme-toggle-container');
         const pageFooter = document.getElementById('page-footer');
 
-        function openExam(examType) {
+        function doOpenExam(examType) {
             currentExamType = examType;
             let title = "Subjects";
             if (examType === 'incourse1') title = "1st Incourse Subjects";
@@ -733,7 +733,7 @@
             renderSubjects();
         }
 
-        function backToMain() {
+        function doBackToMain() {
             pageHeader.classList.remove('hidden');
             subjectsView.classList.add('hidden');
             questionsView.classList.add('hidden');
@@ -743,7 +743,7 @@
             pageFooter.classList.remove('hidden');
         }
 
-        function backToSubjects() {
+        function doBackToSubjects() {
             questionsView.classList.add('hidden');
             subjectsView.classList.remove('hidden');
             currentSubjectId = null;
@@ -770,7 +770,7 @@
             });
         }
 
-        function openSubject(id, title) {
+        function doOpenSubject(id, title) {
             currentSubjectId = id;
             subjectsView.classList.add('hidden');
             questionsView.classList.remove('hidden');
@@ -865,7 +865,7 @@
             return card;
         }
 
-        function showSingleAnswer(question, answer) {
+        function doShowSingleAnswer(question, answer) {
             questionsView.classList.add('hidden');
             document.getElementById('single-question-title').textContent = question;
             document.getElementById('single-answer-content').innerHTML = marked.parse(answer);
@@ -873,7 +873,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function backToQuestions() {
+        function doBackToQuestions() {
             singleAnswerView.classList.add('hidden');
             questionsView.classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -911,6 +911,65 @@
                 }
             }
         });
+    
+        // --- HTML5 History API Integration ---
+
+        // Initialize history state on load
+        if (!history.state) {
+            history.replaceState({ view: 'main' }, '', '');
+        }
+
+        function openExam(examType) {
+            history.pushState({ view: 'subjects', examType }, '', '');
+            doOpenExam(examType);
+        }
+
+        function backToMain() {
+            if (history.state && history.state.view !== 'main') {
+                history.back();
+            } else {
+                doBackToMain();
+            }
+        }
+
+        function openSubject(id, title) {
+            // Include examType in the state since renderQuestions depends on currentExamType
+            history.pushState({ view: 'questions', subjectId: id, title, examType: currentExamType }, '', '');
+            doOpenSubject(id, title);
+        }
+
+        function backToSubjects() {
+            history.back();
+        }
+
+        function showSingleAnswer(question, answer) {
+            history.pushState({ view: 'answer', question, answer, examType: currentExamType, subjectId: currentSubjectId }, '', '');
+            doShowSingleAnswer(question, answer);
+        }
+
+        function backToQuestions() {
+            history.back();
+        }
+
+        window.addEventListener('popstate', (event) => {
+            const state = event.state;
+            if (!state) return;
+
+            if (state.view === 'main') {
+                doBackToMain();
+            } else if (state.view === 'subjects') {
+                doOpenExam(state.examType);
+            } else if (state.view === 'questions') {
+                // Ensure currentExamType is set correctly in case of direct refresh/navigation
+                currentExamType = state.examType; 
+                doOpenSubject(state.subjectId, state.title);
+            } else if (state.view === 'answer') {
+                currentExamType = state.examType;
+                currentSubjectId = state.subjectId;
+                doShowSingleAnswer(state.question, state.answer);
+            }
+        });
+
     </script>
 </body>
 </html>
