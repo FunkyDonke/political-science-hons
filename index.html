@@ -205,7 +205,7 @@
         </div>
 
         <!-- Single Answer View -->
-        <div id="single-answer-view" class="hidden glass-card rounded-2xl p-6 md:p-10 fade-in max-w-4xl mx-auto w-full mt-4">
+        <div id="single-answer-view" class="hidden glass-card md:rounded-2xl p-4 pt-20 md:p-10 fade-in max-w-4xl mx-auto w-full mt-0 md:mt-4 min-h-screen md:min-h-0">
             <div class="flex flex-col md:flex-row justify-between mb-8 pb-4 border-b border-slate-200 dark:border-slate-700 gap-4">
                 <h2 id="single-question-title" class="text-2xl md:text-3xl font-bold text-slate-800 dark:text-white leading-relaxed pr-4 font-['Hind_Siliguri']">Question</h2>
                 <button onclick="backToQuestions()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-medium transition flex items-center gap-2 whitespace-nowrap self-start shrink-0">
@@ -213,7 +213,7 @@
                     Questions
                 </button>
             </div>
-            <div class="bg-white dark:bg-slate-900 rounded-xl p-6 md:p-8 border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="bg-transparent md:bg-white md:dark:bg-slate-900 md:rounded-xl p-0 md:p-8 md:border border-slate-200 dark:border-slate-700 md:shadow-sm">
                 <div id="single-answer-content" class="prose prose-slate dark:prose-invert max-w-none prose-p:leading-loose prose-li:leading-loose md:prose-lg text-justify font-['Hind_Siliguri']">
                     <!-- Answer injected here -->
                 </div>
@@ -817,15 +817,15 @@
             if (kaQs.length > 0) {
                 container.appendChild(createSectionHeader('ক বিভাগ (অতি সংক্ষিপ্ত প্রশ্ন)'));
                 const kaGrid = document.createElement('div');
-                kaGrid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
-                kaQs.forEach(item => kaGrid.appendChild(createQACard(item.q, item.a, 'bg-white dark:bg-slate-800')));
+                kaGrid.className = 'grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-4';
+                kaQs.forEach(item => kaGrid.appendChild(createQACard(item.q, item.a, 'bg-transparent md:bg-white dark:bg-transparent md:dark:bg-slate-800')));
                 container.appendChild(kaGrid);
             }
 
             if (khaQs.length > 0) {
                 container.appendChild(createSectionHeader('খ বিভাগ (সংক্ষিপ্ত প্রশ্ন)'));
                 const khaContainer = document.createElement('div');
-                khaContainer.className = 'space-y-4';
+                khaContainer.className = 'space-y-0 md:space-y-4';
                 khaQs.forEach(item => khaContainer.appendChild(createClickableQACard(item.q, item.a)));
                 container.appendChild(khaContainer);
             }
@@ -833,7 +833,7 @@
             if (gaQs.length > 0) {
                 container.appendChild(createSectionHeader('গ বিভাগ (রচনামূলক প্রশ্ন)'));
                 const gaContainer = document.createElement('div');
-                gaContainer.className = 'space-y-4';
+                gaContainer.className = 'space-y-0 md:space-y-4';
                 gaQs.forEach(item => gaContainer.appendChild(createClickableQACard(item.q, item.a)));
                 container.appendChild(gaContainer);
             }
@@ -852,7 +852,7 @@
 
         function createQACard(question, answer, bgClass) {
             const card = document.createElement('div');
-            card.className = `qa-card ${bgClass} p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm font-['Hind_Siliguri']`;
+            card.className = `qa-card ${bgClass} p-4 md:p-5 md:rounded-xl border-b md:border border-slate-200 dark:border-slate-700 md:shadow-sm font-['Hind_Siliguri']`;
             card.innerHTML = `
                 <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-2">${question}</h4>
                 <div class="text-slate-600 dark:text-slate-400 text-sm md:text-base leading-relaxed">
@@ -865,7 +865,7 @@
 
         function createClickableQACard(question, answer) {
             const card = document.createElement('button');
-            card.className = `w-full bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden text-left p-5 hover:bg-blue-50 dark:hover:bg-slate-700 hover:border-blue-300 dark:hover:border-blue-500 transition-all focus:outline-none group font-['Hind_Siliguri']`;
+            card.className = `w-full bg-transparent md:bg-white dark:bg-transparent md:dark:bg-slate-800 md:rounded-xl border-b md:border border-slate-200 dark:border-slate-700 md:shadow-sm overflow-hidden text-left p-4 md:p-5 md:hover:bg-blue-50 md:dark:hover:bg-slate-700 md:hover:border-blue-300 md:dark:hover:border-blue-500 transition-all focus:outline-none group font-['Hind_Siliguri'] active:bg-slate-100 dark:active:bg-slate-800`;
             card.innerHTML = `
                 <div class="flex items-start justify-between gap-4">
                     <h4 class="text-lg font-bold text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">${question}</h4>
