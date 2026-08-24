@@ -176,7 +176,7 @@
         </div>
 
         <!-- 1st Incourse Subjects View -->
-        <div id="subjects-view" class="hidden glass-card md:rounded-2xl p-4 pt-20 md:p-10 fade-in min-h-screen md:min-h-0 flex-grow">
+        <div id="subjects-view" class="hidden glass-card md:rounded-2xl px-4 py-6 md:p-10 fade-in min-h-screen md:min-h-0 flex-grow">
             <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-200 dark:border-slate-700">
                 <h2 id="subjects-view-title" class="text-3xl font-bold text-slate-800 dark:text-white">Subjects</h2>
                 <button onclick="backToMain()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-medium transition hidden md:flex items-center gap-2">
@@ -190,7 +190,7 @@
         </div>
 
         <!-- Questions View -->
-        <div id="questions-view" class="hidden glass-card rounded-2xl p-6 md:p-10 fade-in max-w-4xl mx-auto w-full">
+        <div id="questions-view" class="hidden glass-card md:rounded-2xl px-4 py-6 md:p-10 fade-in max-w-4xl mx-auto w-full min-h-screen md:min-h-0 flex-grow">
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-4 border-b border-slate-200 dark:border-slate-700 gap-4">
                 <h2 id="current-subject-title" class="text-2xl font-bold text-slate-800 dark:text-white leading-tight">Subject Name</h2>
                 <button onclick="backToSubjects()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-medium transition hidden md:flex items-center gap-2 whitespace-nowrap self-start">
@@ -205,7 +205,7 @@
         </div>
 
         <!-- Single Answer View -->
-        <div id="single-answer-view" class="hidden glass-card md:rounded-2xl p-4 pt-20 md:p-10 fade-in max-w-4xl mx-auto w-full mt-0 md:mt-4 min-h-screen md:min-h-0">
+        <div id="single-answer-view" class="hidden glass-card md:rounded-2xl px-4 py-6 md:p-10 fade-in max-w-4xl mx-auto w-full mt-0 md:mt-4 min-h-screen md:min-h-0 flex-grow">
             <div class="flex flex-col md:flex-row justify-between mb-8 pb-4 border-b border-slate-200 dark:border-slate-700 gap-4">
                 <h2 id="single-question-title" class="text-2xl md:text-3xl font-bold text-slate-800 dark:text-white leading-relaxed pr-4 font-['Hind_Siliguri']">Question</h2>
                 <button onclick="backToQuestions()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-medium transition hidden md:flex items-center gap-2 whitespace-nowrap self-start shrink-0">
@@ -740,6 +740,7 @@
             pageHeader.classList.add('hidden');
             mainView.classList.add('hidden');
             themeToggleContainer.classList.add('hidden');
+            pageFooter.classList.add('hidden');
             subjectsView.classList.remove('hidden');
             renderSubjects();
             window.scrollTo(0, 0);
