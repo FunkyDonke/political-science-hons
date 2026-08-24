@@ -89,12 +89,31 @@
       var(--bg);
     transition:background 0.25s ease, color 0.25s ease; /* No opacity transition by default so it hides instantly */
     opacity: 0;
+    transform: scale(0.97);
     pointer-events: none;
     z-index:1;
   }
-  .page.home{ opacity: 1; pointer-events: auto; z-index:2; transition:background 0.25s ease, color 0.25s ease, opacity 0.2s ease-out; }
-  .page.active{ opacity: 1; pointer-events: auto; z-index:3; transition:background 0.25s ease, color 0.25s ease, opacity 0.2s ease-out; }
-  .page.exit{ opacity: 0 !important; pointer-events: none; z-index:1; transition: none !important; }
+  .page.home{ 
+      opacity: 1; 
+      transform: none;
+      pointer-events: auto; 
+      z-index:2; 
+      transition: background 0.25s ease, color 0.25s ease, opacity 0.26s cubic-bezier(0.16,1,0.3,1), transform 0.26s cubic-bezier(0.16,1,0.3,1); 
+  }
+  .page.active{ 
+      opacity: 1; 
+      transform: none;
+      pointer-events: auto; 
+      z-index:3; 
+      transition: background 0.25s ease, color 0.25s ease, opacity 0.26s cubic-bezier(0.16,1,0.3,1), transform 0.26s cubic-bezier(0.16,1,0.3,1); 
+  }
+  .page.exit{ 
+      opacity: 0 !important; 
+      transform: scale(1) !important; 
+      pointer-events: none; 
+      z-index:1; 
+      transition: none !important; 
+  }
 
   /* ---------- Home screen ---------- */
   header{
