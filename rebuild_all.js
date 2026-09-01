@@ -11,7 +11,9 @@ let allQuestions = [];
 let qIdCounter = 1;
 
 function cleanA(text) {
-    let result = text.replace(/(s*\[[^\]]+\])+$/g, ''); // end of text
+    let result = text;
+    result = result.replace(/^from perplexity\s*\n*/i, ''); // Strip perplexity prefix
+    result = result.replace(/(\s*\[[^\]]+\])+$/g, ''); // end of text
     result = result.replace(/\\\[\[[^\]]+\]\([^)]+\)\\\]/g, ''); // escaped brackets \[[text](url)\]
     result = result.replace(/\[\[[^\]]+\]\([^)]+\)\]/g, ''); // normal brackets [[text](url)]
     result = result.replace(/\s*\[[^\]]+\](?!\()/g, ''); // unlinked sources like [bn.wikipedia]
@@ -78,77 +80,64 @@ function processSubject(mainFilePath, subjectDir, examType, subjectId) {
           q = '';
           a = '';
       }
-      const text = child.textContent.trim().replace(/-/g, ' ');
+      const text = child.textContent.trim().replace(/-/g, ' ').replace(/\s+/g, ' ');
       if (text.includes('ক বিভাগ')) currentSection = 'ka';
       else if (text.includes('খ বিভাগ')) currentSection = 'kha';
       else if (text.includes('গ বিভাগ')) currentSection = 'ga';
       else currentSection = null;
     } else if (currentSection === 'ka') {
-      if (child.tagName === 'H2' || child.tagName === 'H3' || child.tagName === 'H4') {
-          // If we already had a pending question, push it before starting a new one
-          if (q && a) {
-              allQuestions.push({
-                  id: `q${qIdCounter++}`,
-                  examType,
-                  subjectId,
-                  section: currentSection,
-                  q: cleanQ(q),
-                  a: cleanA(a)
-              });
-          }
-          q = child.textContent.trim();
-          a = '';
-      } else if (child.tagName === 'P' || child.tagName === 'UL') {
-          let rawHtml = '';
-          if (child.tagName === 'UL') {
-              rawHtml = '<ul>' + child.innerHTML + '</ul>';
-          } else {
-              rawHtml = child.innerHTML;
-          }
-          
-          if (!rawHtml) continue;
+      let rawHtml = '';
+      if (child.tagName === 'UL') {
+          rawHtml = '<ul>' + child.innerHTML + '</ul>';
+      } else {
+          rawHtml = child.innerHTML;
+      }
+      if (!rawHtml) continue;
 
-          // Legacy format support: if Q and A are in the same P tag separated by <br>
-          if (rawHtml.includes('<br') && !q) {
-              const parts = rawHtml.split(/<br\s*\/?>/i);
-              let localQ = '';
-              let localA = '';
-              for (const part of parts) {
-                  const text = new JSDOM(part).window.document.body.textContent.trim();
-                  if (!text) continue;
-                  
-                  if (text.match(/^(উত্তর|উঃ)/) || text.includes('উত্তরঃ')) {
-                      localA = text.replace(/^(উত্তর|উঃ)\s*:?\s*/, '').trim();
-                      if (localQ && localA) {
-                          allQuestions.push({
-                              id: `q${qIdCounter++}`,
-                              examType,
-                              subjectId,
-                              section: currentSection,
-                              q: cleanQ(localQ),
-                              a: cleanA(localA)
-                          });
-                          localQ = '';
-                          localA = '';
-                      }
-                  } else {
-                      localQ = text;
-                  }
+      const isHeading = ['H1', 'H2', 'H3', 'H4'].includes(child.tagName);
+      const hasBr = rawHtml.includes('<br');
+      
+      const parts = hasBr ? rawHtml.split(/<br\s*\/?>/i) : [rawHtml];
+      
+      for (const part of parts) {
+          const text = new JSDOM(part).window.document.body.textContent.trim();
+          if (!text) continue;
+          
+          const isQuestionMarker = text.match(/^[ক-ল০-৯0-9]+[\.\)]/) || isHeading;
+          const isAnswerMarker = text.match(/^(উত্তর|উঃ)/) || text.includes('উত্তরঃ');
+          
+          if (isQuestionMarker && !isAnswerMarker) {
+              if (q && a) {
+                  allQuestions.push({
+                      id: `q${qIdCounter++}`,
+                      examType,
+                      subjectId,
+                      section: currentSection,
+                      q: cleanQ(q),
+                      a: cleanA(a)
+                  });
+              }
+              q = text;
+              a = '';
+          } else if (isAnswerMarker) {
+              const cleanedText = text.replace(/^(উত্তর|উঃ)\s*:?\s*/, '').trim();
+              if (a) {
+                  a += (cleanedText ? '\n\n' + cleanedText : '');
+              } else {
+                  a = cleanedText;
               }
           } else {
-              // New format: Q is H2, A is subsequent P/UL tags
-              const text = new JSDOM(rawHtml).window.document.body.textContent.trim();
-              if (text) {
-                  let cleanedText = text;
-                  if (cleanedText.match(/^(উত্তর|উঃ)/) || cleanedText.includes('উত্তরঃ')) {
-                      cleanedText = cleanedText.replace(/^(উত্তর|উঃ)\s*:?\s*/, '').trim();
-                  }
-                  
+              // No clear marker. If we have a 'q' but no 'a', and it's the first answer part, it belongs to 'a'.
+              // If we already have 'a', append to 'a'.
+              if (q) {
                   if (a) {
-                      a += '\n\n' + cleanedText;
+                      a += '\n\n' + text;
                   } else {
-                      a = cleanedText;
+                      a = text;
                   }
+              } else {
+                  // Fallback: treat as question if q is empty
+                  q = text;
               }
           }
       }
@@ -196,7 +185,7 @@ for (const [folder, examType] of Object.entries(examMap)) {
 }
 
 // 2. Remove any test exam 231903 questions extracted from old folder (we want the updated one)
-allQuestions = allQuestions.filter(q => !(q.examType === 'test' && (q.subjectId === '231903' || q.subjectId === '231905')));
+allQuestions = allQuestions.filter(q => !(q.examType === 'test' && (q.subjectId === '231903' || q.subjectId === '231905' || q.subjectId === '231907')));
 
 // 3. Process new updated test exam directory
 const newDir = 'D:\\MyAllProjects\\NewWebsite\\New folder\\Private & Shared';
@@ -205,6 +194,10 @@ processDirectory(newDir, 'test');
 // 3.5 Process second updated test exam directory (231905)
 const newDir2 = 'D:\\MyAllProjects\\NewWebsite\\New folder (2)\\Private & Shared';
 processDirectory(newDir2, 'test');
+
+// 3.6 Process third updated test exam directory (231907)
+const newDir3 = 'D:\\MyAllProjects\\NewWebsite\\New folder (3)\\Private & Shared';
+processDirectory(newDir3, 'test');
 
 // Apply manual fixes before saving
 const p5Question = allQuestions.find(q => q.examType === 'test' && q.subjectId === '231903' && q.q.includes('জাতিসংঘের পঞ্চশক্তি কারা'));
