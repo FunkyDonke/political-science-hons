@@ -185,7 +185,7 @@ for (const [folder, examType] of Object.entries(examMap)) {
 }
 
 // 2. Remove any test exam 231903 questions extracted from old folder (we want the updated one)
-allQuestions = allQuestions.filter(q => !(q.examType === 'test' && (q.subjectId === '231903' || q.subjectId === '231905' || q.subjectId === '231907')));
+allQuestions = allQuestions.filter(q => !(q.examType === 'test' && (q.subjectId === '231903' || q.subjectId === '231905' || q.subjectId === '231907' || q.subjectId === '231909')));
 
 // 3. Process new updated test exam directory
 const newDir = 'D:\\MyAllProjects\\NewWebsite\\New folder\\Private & Shared';
@@ -198,6 +198,10 @@ processDirectory(newDir2, 'test');
 // 3.6 Process third updated test exam directory (231907)
 const newDir3 = 'D:\\MyAllProjects\\NewWebsite\\New folder (3)\\Private & Shared';
 processDirectory(newDir3, 'test');
+
+// 3.7 Process fourth updated test exam directory (231909)
+const newDir4 = 'D:\\MyAllProjects\\NewWebsite\\New folder (4)\\Private & Shared';
+processDirectory(newDir4, 'test');
 
 // Apply manual fixes before saving
 const p5Question = allQuestions.find(q => q.examType === 'test' && q.subjectId === '231903' && q.q.includes('জাতিসংঘের পঞ্চশক্তি কারা'));
